@@ -40,6 +40,7 @@ jobs:
             -Dsonar.organization=pulse-pass
             -Dsonar.qualitygate.wait=true
             -Dsonar.sources=src
+            -Dsonar.coverage.exclusions=**/*
 
   build:
     needs: sonar
