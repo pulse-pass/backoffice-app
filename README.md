@@ -4,7 +4,7 @@ Aplicação web do backoffice do PulsePass, usada pelo organizador e pelo admini
 
 ## Rodar localmente
 
-O gateway precisa estar no ar em `http://localhost:8090` (veja o README do `backoffice-gateway`). O Node 22 ou superior é necessário.
+O gateway precisa estar no ar em modo development, em `http://localhost:8190` (veja o README do `backoffice-gateway`). O Node 22 ou superior é necessário.
 
 ```bash
 cp .env.example .env
@@ -27,7 +27,7 @@ A aplicação fica em `http://localhost:3000`. A URL do gateway vem de `NEXT_PUB
 ## Docker
 
 ```bash
-docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:8090 -t backoffice-app .
+docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:8190 -t backoffice-app .
 docker run --rm -p 3000:3000 backoffice-app
 ```
 

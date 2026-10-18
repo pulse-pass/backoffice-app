@@ -56,4 +56,4 @@ jobs:
       - name: Build
         run: npm run build
       - name: Build Docker image
-        run: docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:8090 -t backoffice-app:pr .
+        run: docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:8190 -t backoffice-app:pr .
