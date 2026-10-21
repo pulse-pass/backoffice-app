@@ -4,6 +4,8 @@ import type { Metadata, Viewport } from 'next'
 import { Big_Shoulders, DM_Mono, Familjen_Grotesk } from 'next/font/google'
 import { Toaster } from 'sonner'
 
+import { SessionInitializer } from '@/providers/session.initializer'
+
 const bigShoulders = Big_Shoulders({
   subsets: ['latin'],
   weight: 'variable',
@@ -27,7 +29,7 @@ const dmMono = DM_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'PulsePass Backoffice',
+  title: { default: 'PulsePass Backoffice', template: '%s · PulsePass Backoffice' },
   description: 'Backoffice do PulsePass para organizadores de eventos.',
 }
 
@@ -39,6 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="pt-BR" className={`${bigShoulders.variable} ${familjen.variable} ${dmMono.variable}`}>
       <body>
+        <SessionInitializer />
         {children}
         <Toaster
           position="top-right"

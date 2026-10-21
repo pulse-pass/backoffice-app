@@ -1,3 +1,5 @@
+import type { SubmitEvent } from 'react'
+
 import type {
   CreateLegalPersonFieldErrors,
   CreateLegalPersonFieldKey,
@@ -13,6 +15,18 @@ export interface CadastroPageState {
   submission: {
     isSubmitting: boolean
   }
+}
+
+export interface PageViewProps {
+  formData: CreateLegalPersonFormData
+  errors: CreateLegalPersonFieldErrors
+  isSubmitting: boolean
+  companyValid: boolean
+  ownerValid: boolean
+  onChange: (key: CreateLegalPersonFieldKey, value: string) => void
+  onBlur: (key: CreateLegalPersonFieldKey) => void
+  registerField: (key: CreateLegalPersonFieldKey) => (element: HTMLInputElement | null) => void
+  onSubmit: (event: SubmitEvent<HTMLFormElement>) => void
 }
 
 export interface SectionProps<T> {
