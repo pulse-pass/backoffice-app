@@ -1,29 +1,12 @@
 import Link from 'next/link'
-import type { SubmitEvent } from 'react'
 
 import { Button } from '@/components/Button'
 import { PublicHeader } from '@/components/PublicHeader'
-import type {
-  CreateLegalPersonFieldErrors,
-  CreateLegalPersonFieldKey,
-  CreateLegalPersonFormData,
-} from '@/services/legal-person/forms/create-legal-person.form.types'
 
 import { CompanySection } from './components/CompanySection'
 import { OwnerSection } from './components/OwnerSection'
 import { RegistrationIntro } from './components/RegistrationIntro'
-
-interface PageViewProps {
-  formData: CreateLegalPersonFormData
-  errors: CreateLegalPersonFieldErrors
-  isSubmitting: boolean
-  companyValid: boolean
-  ownerValid: boolean
-  onChange: (key: CreateLegalPersonFieldKey, value: string) => void
-  onBlur: (key: CreateLegalPersonFieldKey) => void
-  registerField: (key: CreateLegalPersonFieldKey) => (element: HTMLInputElement | null) => void
-  onSubmit: (event: SubmitEvent<HTMLFormElement>) => void
-}
+import type { PageViewProps } from './page.types'
 
 export function PageView({
   formData,

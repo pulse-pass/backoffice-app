@@ -24,7 +24,6 @@ export default function CadastroPage() {
   const [state, setState] = useState<CadastroPageState>(INITIAL_STATE)
   const fieldRefs = useRef<Partial<Record<CreateLegalPersonFieldKey, HTMLInputElement | null>>>({})
   const isSubmittingRef = useRef(false)
-  const { data, errors, touched } = state.form
 
   const registerField = (key: CreateLegalPersonFieldKey) => (element: HTMLInputElement | null) => {
     fieldRefs.current[key] = element
@@ -51,8 +50,8 @@ export default function CadastroPage() {
   }
 
   const handleBlur = (key: CreateLegalPersonFieldKey) => {
-    if (!touched[key]) return
-    const message = createLegalPersonForm.validateField(data, key)
+    if (!state.form.touched[key]) return
+    const message = createLegalPersonForm.validateField(state.form.data, key)
     setState((current) => ({
       ...current,
       form: { ...current.form, errors: { ...current.form.errors, [key]: message } },
@@ -63,7 +62,7 @@ export default function CadastroPage() {
     event.preventDefault()
     if (isSubmittingRef.current) return
 
-    const nextErrors = createLegalPersonForm.validate(data)
+    const nextErrors = createLegalPersonForm.validate(state.form.data)
     setState((current) => ({
       ...current,
       form: {
@@ -81,7 +80,7 @@ export default function CadastroPage() {
     setSubmitting(true)
     let response: CreateLegalPersonResponse
     try {
-      response = await legalPersonApi.createLegalPerson(createLegalPersonForm.toRequest(data))
+      response = await legalPersonApi.createLegalPerson(createLegalPersonForm.toRequest(state.form.data))
     } catch (error) {
       toast.error(getApiErrorMessage(error))
       setSubmitting(false)
@@ -93,11 +92,11 @@ export default function CadastroPage() {
 
   return (
     <PageView
-      formData={data}
-      errors={errors}
+      formData={state.form.data}
+      errors={state.form.errors}
       isSubmitting={state.submission.isSubmitting}
-      companyValid={createLegalPersonForm.isSectionValid(data, 'company')}
-      ownerValid={createLegalPersonForm.isSectionValid(data, 'owner')}
+      companyValid={createLegalPersonForm.isSectionValid(state.form.data, 'company')}
+      ownerValid={createLegalPersonForm.isSectionValid(state.form.data, 'owner')}
       onChange={handleChange}
       onBlur={handleBlur}
       registerField={registerField}

@@ -20,12 +20,18 @@ paths:
 src/
   app/
     layout.tsx, globals.css, page.tsx
+    (organizer)/, (admin)/        # route groups by role: layout.tsx + the role's routes (eventos, organizadores)
     <route>/                      # pt-BR URL segment (cadastro, enviado, login)
       page.tsx                    # client container: state + handlers
-      page.types.ts               # <Page>PageState and the props shared by the route components
+      page.types.ts               # <Page>PageState, PageViewProps and the props shared by the route components
       PageView.tsx                # presentation, props only
       components/                 # components used only by this route (PascalCase)
-  components/                     # base components from the Figma "Componentes" page (PascalCase)
+  components/                     # visual base components from the Figma "Componentes" page (PascalCase)
+  layouts/
+    <area>/                       # container shared by several routes (backoffice)
+      <Area>Layout.tsx            # client container: store, router, API calls, handlers
+      <Area>LayoutView.tsx        # presentation, props only
+      <area>-layout.types.ts      # <Area>LayoutState and <Area>LayoutViewProps
   lib/                            # third-party wrappers, named after the library (axios.ts, toast.tsx)
   services/
     api/                          # base.api.ts, api-error.types.ts, api-error.handlers.ts
@@ -35,19 +41,32 @@ src/
       <resource>.types.ts         # API request/response types
       forms/<action>-<resource>.form.ts, .form.types.ts
   stores/<resource>.store.ts      # MobX singletons
-  providers/<resource>.initializer.tsx  # fills a store from server data
-  utils/<subject>.handlers.ts     # pure functions
+  providers/<resource>.initializer.tsx  # fills a store from server data / wires a store into lib/
+  utils/<subject>.handlers.ts     # generic pure helpers, no business rules (see Utils)
 ```
 
 - Route folders under `src/app/` are the URLs the user sees, so they are in pt-BR, lowercase, with hyphens (`/cadastro`, `/cadastro/enviado`, `/login`). Every other folder and file name is in English.
+- Page titles: the root layout defines `title.template` (`'%s · PulsePass Backoffice'`). Server pages export `metadata = { title: 'Eventos' }`; `'use client'` pages cannot, so their route folder gets a `layout.tsx` that only exports the `metadata` and returns `children` (`login/layout.tsx`, `cadastro/layout.tsx`). Every route has its own title.
+- Route groups (`(organizer)`, `(admin)`) do not become part of the URL, so they are named in English like any other folder. Each group's `layout.tsx` only wraps its routes in `BackofficeLayout role="..."` (`src/layouts/backoffice/BackofficeLayout.tsx`), the single place of the guard, so the two layouts never duplicate it.
 - Use the `@/` alias for imports across folders; relative imports only inside the same folder or its parent (`./PageView`, `./page.types`, `../legal-person.types`).
+
+## Utils
+
+- `src/utils/` holds only generic language helpers that know nothing about the product: masks and check digits (`cpf.handlers.ts`, `cnpj.handlers.ts`), generic validators (`form.handlers.ts`), `classNames`, `getInitials`, `decodeJwtPayload` (returns `unknown`). Business rules (which claims a token has, which role wins, which area a role opens, what a status means) never go there: they live in the store or service of the resource (`sessionStore.claims`, `sessionStore.role`, `sessionStore.areaPath`).
 
 ## Pages
 
 - `page.tsx` is the client container (`'use client'`) and holds only the state and the handlers (`handleChange`, `handleBlur`, `handleSubmit`...). Validation, masks and request mapping come from the form object; API calls come from `<resource>Api`; it never parses an error by itself.
 - A page has a **single `useState`**: one object grouped by context and typed as `<Page>PageState` in `page.types.ts` (e.g. `{ form: { data, errors, touched }, submission: { isSubmitting } }`), always updated with the functional form `setState((current) => ...)` so related fields change together. DOM refs and synchronous guards (double-submit lock) stay in `useRef`.
+- `page.types.ts` exists in every route whose `page.tsx` has state and holds, in this order: `<Page>PageState`, `PageViewProps` (the props of `PageView.tsx`) and the props shared by more than one route component, in the order the components appear on screen (e.g. `SectionProps<T>` in `/cadastro`). Props used by a single component stay in that component file (`RegistrationIntroProps`). Routes without state (`/`, `/cadastro/enviado`, the empty areas) have no `page.types.ts`.
 - `PageView.tsx` is the presentation: it receives all data and callbacks by props, holds no state beyond what is purely visual, and never calls a service.
 - A screen is built only with base components (`src/components/`) and route components (`app/<route>/components/`).
+
+## Components and containers
+
+- `src/components/` holds only visual components: everything comes in by props, and they never read a store, call an API or use `useRouter`/`usePathname`/`useSearchParams` (the current path comes as a prop, e.g. `activePath` in `BackofficeNav`). Purely visual state (menu open, password visible) and DOM refs are fine.
+- Logic lives in containers, each with its presentation in a `View`: a route is `page.tsx` + `PageView.tsx` (+ `page.types.ts`); something shared by several routes is `src/layouts/<area>/<Area>Layout.tsx` + `<Area>LayoutView.tsx` (+ `<area>-layout.types.ts`), following the same rules as pages (single `useState` typed by `<Area>LayoutState`, View with props only). A Next.js `layout.tsx` only wraps its routes in the container.
+- Loading state while the session hydrates or a redirect is in flight (`BackofficeLayout`, `/`): never `null` (blank screen for screen readers); render `<div role="status" className="sr-only">Carregando</div>`, with no new visual spinner.
 
 ## Forms
 
@@ -59,7 +78,7 @@ src/
 
 ## API and errors
 
-- `<resource>.api.ts`: `class <Resource>Api extends BaseApi` (`src/services/api/base.api.ts`) and the exported singleton `<resource>Api`; one method per route, named after the action (`createLegalPerson`). `src/lib/axios.ts` is the single axios instance (`baseURL`, JSON, `Accept-Language: pt-BR`, 30 s timeout); the token is added there when the login exists.
+- `<resource>.api.ts`: `class <Resource>Api extends BaseApi` (`src/services/api/base.api.ts`) and the exported singleton `<resource>Api`; one method per route, named after the action (`createLegalPerson`). `src/lib/axios.ts` is the single axios instance (`baseURL`, JSON, `Accept-Language: pt-BR`, 30 s timeout); the session handlers registered by `SessionInitializer` add the token there (see Session).
 - API types are in snake_case and mirror the JSON exactly: `<Action><Resource>Request` / `<Action><Resource>Response`.
 - Every gateway error becomes an error toast with the response `message` as it comes: `toast.error(getApiErrorMessage(error))` (`src/lib/toast.tsx`, `src/services/api/api-error.handlers.ts`). The `title` (HTTP reason phrase) is not shown and the front never rewrites the message; if it is unclear, improve it in the service's `messages_pt.properties`. `getApiErrorMessage` also covers a request without a known error body (fixed pt-BR message). The `code` is only used when it changes the logic (e.g. redirecting), never to pick a text.
 - Screens never import `sonner` or `axios` directly: they go through `src/lib/toast.tsx` and the `*.api.ts` services.
@@ -70,13 +89,21 @@ src/
 - `src/stores/<resource>.store.ts`: MobX class with `makeAutoObservable` and an exported singleton (`legalPersonStore`). Components that read it are wrapped in `observer`.
 - When the data comes from the server, a server component reads it through `<resource>.server.ts` and `src/providers/<resource>.initializer.tsx` (client component) fills the store from its props.
 
+## Session
+
+- `src/stores/session.store.ts` (`sessionStore`) holds `accessToken`, `refreshToken`, `isHydrated` and the computed `claims` (payload decoded by the generic `decodeJwtPayload` of `src/utils/jwt.handlers.ts`, validated and mapped to `SessionClaims` inside the store; never trusted for authorization: the gateway validates the signature), `role` (`'organizer' | 'admin' | null`, admin wins when both exist), `areaPath` (`/eventos` for `organizer`, `/organizadores` for `admin`, and `/login` without a role). Actions: `hydrate()` (reads `localStorage` on the client, once, from `SessionInitializer`), `setSession(response)` (also writes `localStorage`) and `clear()`. Components that read it are wrapped in `observer` and wait for `isHydrated` before deciding anything, so the server render and the first client render match.
+- `src/lib/axios.ts` never imports a store (no `lib` ↔ `stores` cycle). It exports `registerSessionHandlers({ getAccessToken, getRefreshToken, refreshAccessToken, onUnauthorized })`, called once by `src/providers/session.initializer.tsx` (client component in the root layout, which also calls `sessionStore.hydrate()`). The request interceptor adds `Authorization: Bearer` except on the public gateway routes (`PUBLIC_PATHS`: `/legal_persons`, `/auth/login`, `/auth/refresh`), because the gateway rejects a stale bearer even on public routes. The request interceptor also records the token it sent (`config.sentToken`). The response interceptor handles a `401` on every route except `/auth/login` and `/auth/refresh` (`NO_REFRESH_PATHS`), so `/auth/logout` with an expired access token also refreshes and is repeated once (`retried`). Before refreshing it compares `sentToken` with the current access token: if it already changed (a parallel request refreshed), it only repeats the request with the new token. Otherwise there is a single shared refresh (one promise in flight). Only a `400`/`401` from the refresh calls `onUnauthorized` (clears the session and sends the user to `/login`); a network failure or `5xx` rethrows the original error and keeps the session. `refreshAccessToken` (in `SessionInitializer`) discards the response, returning `null`, when `sessionStore.refreshToken` changed or became null since it was sent (logout or new login in the meantime), so a late refresh never rewrites the session; a `null` token rethrows the original error without clearing anything.
+- When the repeated request is `/auth/logout` (access token expired, refreshed by the interceptor), its body is rebuilt with the current `refresh_token` from `getRefreshToken()`, never the one captured before the refresh, so the logout still ends the session if Keycloak revokes rotated refresh tokens.
+- Guard by role: `BackofficeLayout` (client, `observer`) renders the loading status (see Components) until `sessionStore.isHydrated`; without a session it does `router.replace('/login')`; with another role it does `router.replace(sessionStore.areaPath)`; with the group's role it renders `BackofficeLayoutView` (nav + page), passing `sessionStore.areaPath` as `homePath` so the nav never repeats the role-to-area rule. The token role is only a UX decision, the gateway enforces access. Logout (`handleLogout` in `BackofficeLayout`) calls `sessionApi.deleteSession` ignoring a failure, then `sessionStore.clear()` and `router.replace('/login')`, with a lock against a double click.
+- Screens call `sessionApi` and `sessionStore`; they never read or write `localStorage` or the tokens by themselves.
+
 ## Naming
 
 - Files that are not React components: `<name>.<role>.ts` in kebab-case, with a fixed set of roles: `api`, `server`, `types`, `store`, `initializer`, `form`, `handlers` (`legal-person.api.ts`, `create-legal-person.form.types.ts`, `cnpj.handlers.ts`). `src/lib/` files take the library name (`axios.ts`, `toast.tsx`).
 - Every React component file is PascalCase and matches the component (`Button.tsx`, `CompanySection.tsx`, `PageView.tsx`); only the files Next.js names (`page.tsx`, `layout.tsx`, `error.tsx`...) differ. Base components use named exports; Next.js files use the default export it requires.
 - Types: API `<Action><Resource>Request` / `<Action><Resource>Response`; form `<Action><Resource>FormData`, `<Action><Resource>FieldKey`, `<Action><Resource>FormSection`, `<Action><Resource>FieldErrors`; page state `<Page>PageState` (the page component is `<Page>Page`); props `<Component>Props`; API classes `<Resource>Api`.
 - Functions start with a verb: `validate*`, `format*`, `parse*`, `get*`, `update*`, `is*`/`has*` for booleans, `to<Target>` for mappings; page event handlers are `handle<Event>`.
-- Singletons in camelCase (`legalPersonApi`, `legalPersonStore`, `createLegalPersonForm`, `toast`); module constants in `SCREAMING_SNAKE_CASE`.
+- Singletons in camelCase (`legalPersonApi`, `legalPersonStore`, `createLegalPersonForm`, `toast`); module constants in `SCREAMING_SNAKE_CASE`. Constants hold only configuration and limits (`STORAGE_KEY`, `CPF_LENGTH`, `PUBLIC_PATHS`, toast durations); user-facing text (messages, labels, fallbacks) is never a constant and is written where it is used (`toast.error(...)`, `name || 'Conta'`). Declarative lists rendered with `map` (`ROLES` in `LoginIntro`) may hold their labels; loose texts never.
 
 ## Code
 
@@ -85,5 +112,7 @@ src/
 - No comments in code, CSS, config or Dockerfile: names and structure must explain the code, and decisions go to the rules, the README or the task notes. The only exception is the version comment next to an action pinned by SHA in the workflows (Sonar rule S7637).
 - Code (names, logs) in English; every user-facing text in pt-BR.
 - React 19 event types: `SubmitEvent` for form submit and `ChangeEvent` for inputs; `FormEvent` is deprecated.
+- No destructuring just to shorten access: read the page state, stores and props objects through their path (`state.form.data`, `sessionStore.role`, `formData.credentials.password`), so every read is visibly fresh and the same value is never read in two ways. Destructuring is only for separating values (`...rest` props in a base component), for component parameters (`function PageView({ formData, ... })`) and for the fields of a function result used right away (`const { area_code, number } = parsePhone(value)`).
+- An effect that reacts to a MobX store has no dependency array (the `observer` component re-renders when the store changes and the effect runs after each render); store values are never listed as dependencies (`react-hooks/exhaustive-deps` rejects outer-scope values).
 - `try/catch` only around the call that throws; what runs after a successful call goes after the block. No defensive validation beyond the form rules.
 - Conditional class names with `classNames(...)` (`src/utils/class-name.handlers.ts`), not template strings.

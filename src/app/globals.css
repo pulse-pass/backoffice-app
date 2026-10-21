@@ -15,6 +15,7 @@
   --color-text-primary: var(--palette-shadow-grey);
   --color-text-secondary: #545a66;
   --color-text-inverse: var(--palette-platinum);
+  --color-text-inverse-secondary: var(--palette-mist);
   --color-action-primary: var(--palette-vibrant-coral);
   --color-accent-live: var(--palette-lemon-lime);
   --color-accent-selected: var(--palette-sky-aqua);
@@ -42,6 +43,8 @@
 
   --container-page: 1440px;
   --column-intro: 340px;
+  --container-card: 460px;
+  --sidebar-width: 264px;
 
   --font-display: var(--font-big-shoulders), sans-serif;
   --font-sans: var(--font-familjen), sans-serif;
@@ -257,4 +260,24 @@ a,
     background-color 150ms ease,
     border-color 150ms ease,
     color 150ms ease;
+}
+
+@utility motion-menu-panel {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 100ms ease-out,
+    transform 0s linear 100ms,
+    visibility 0s linear 100ms;
+
+  &[data-open='true'] {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 150ms ease-out,
+      transform 150ms ease-out,
+      visibility 0s;
+  }
 }

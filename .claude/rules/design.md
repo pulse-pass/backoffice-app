@@ -13,6 +13,17 @@ The Figma file (`zbnAZgE9m0T1nf6HDTDFvw`, pages Fundamentos and Componentes, plu
 
 Order when deciding: project patterns (these rules, existing code) > design skills > mockup details. The identity above never changes because of a skill (DM Mono stays even if a skill dislikes monospace).
 
+## Login deviations
+
+- `/login` follows mockup 01 with two changes: the user is identified by CPF (mask, `autocomplete="username"`, numeric keyboard) instead of the e-mail, and there is no "Esqueci minha senha" link, since no recovery flow exists. The role list of the dark panel is desktop only (as in the 390 px mockup).
+- Secondary text on the dark panel uses `text-text-inverse-secondary` (`--color-text-inverse-secondary`, alias of mist, 9:1 on shadow grey) instead of an opacity of the inverse text; `--container-card` (460 px) is the login card width.
+
+## Navigation deviations
+
+- `BackofficeNav` (Figma "Navegação do backoffice", device × role) and `NavItem` (device × active) only list routes that exist: organizer has Eventos, admin has Organizadores; the mockup's Membros, Métricas ao vivo and Auditoria come with their own subtasks, as do the counters and the company data. The organizer has no context card until the company comes in the token (EP07-US03-T01); the admin card is static ("Plataforma · Administração PulsePass").
+- Desktop (from `md`): dark sidebar (`--sidebar-width`, 264 px, `100dvh` sticky), active item in sky aqua with dark text and `aria-current="page"`, focus outline in `text-inverse` on the dark surface. Mobile: light bar with logo, initials and a menu button (44 px, `aria-expanded`, `aria-controls`, Esc and outside click close it and Esc returns focus to the button), with the sections as chips below. The user name falls back to "Conta" and wraps in two lines at most.
+- `Logo` has an `inverse` variant (platinum wordmark) for dark surfaces. `PageHeader` (eyebrow + display title) and `EmptyState` (dashed box, one sentence, no promised date) are the base blocks of an area page.
+
 ## Colors (light theme)
 
 - Platinum (`bg-page`, `text-inverse`): page background.
@@ -46,7 +57,7 @@ Order when deciding: project patterns (these rules, existing code) > design skil
 - Notifications are toasts (Sonner, one `<Toaster>` in the root layout, `toast.error`/`toast.success` from `src/lib/toast.tsx`, rendered with the `Toast` component): error in coral with the "!" badge, success in shadow grey with a lemon-lime check; top right on desktop (16 px from the top of the viewport, aligned with the page gutter) and full width at the top on mobile (8 px); the header is not fixed, so the toast never reserves its height; error stays 6 s, success 4 s, both closable. This replaces the inline error alert of the mockups (a deliberate deviation for the whole project).
 - Every screen is built with the base components of `src/components/` (`Logo`, `Button`, `Field`, `Toast`, `PublicHeader`, ...) and has a 390 px version besides the 1440 px one.
 - New components come from the Figma page "Componentes" and keep the variant names (Button: primary, dark, outline, highlight, outline-inverse × m, s; Field: default, error, empty × text, numeric). A component is only created when a screen uses it.
-- Accessibility: touch targets of at least 44 px (invisible padding, never a visual change); state is never conveyed by color alone (`sr-only` text); a loading button keeps its label in the DOM and uses `aria-disabled`, so focus is not lost; the password toggle is a plain button whose visible text is its name ("mostrar"/"ocultar", `aria-controls` on the field), never `aria-label` different from the visible text (WCAG 2.5.3); a `Button` of size `s` keeps `min-h-11`.
+- Accessibility: touch targets of at least 44 px (invisible padding, never a visual change); state is never conveyed by color alone (`sr-only` text); a loading button keeps its label in the DOM and uses `aria-disabled`, so focus is not lost; the password toggle is a plain button whose visible text is its name ("mostrar"/"ocultar", `aria-controls` on the field), never `aria-label` different from the visible text (WCAG 2.5.3); a `Button` of size `s` keeps `min-h-11`. A horizontally scrolling strip (`overflow-x-auto`) clips the focus outline, so it gets token padding on the clipped sides (`pt-xs`) to give the outline room. A screen with nothing to show while hydrating or redirecting renders a `role="status"` block with `sr-only` "Carregando" and keeps the page background.
 - Mobile: inputs at 16 px or more (no iOS zoom), `100dvh` instead of `100vh`, hover only under `(hover: hover)` (Tailwind's `hover:` already does it), `autocomplete` on every field, visible keyboard focus with the `ink` outline.
 
 ## Motion (everything off under `prefers-reduced-motion`)
@@ -59,5 +70,8 @@ Order when deciding: project patterns (these rules, existing code) > design skil
 | Field error         | appears         | opacity 0→1                         | 150 ms         | ease-out                                 |
 | Button spinner      | submitting      | rotation                            | 700 ms/turn    | linear                                   |
 | Toast close button  | hover           | background color                    | 150 ms         | ease                                     |
+| Mobile menu panel   | opens           | opacity 0→1, `translateY(-4px→0)`   | 150 ms         | ease-out                                 |
+| Mobile menu panel   | closes          | opacity 1→0                         | 100 ms         | ease-out                                 |
+| Nav item            | hover/focus     | background color                    | 150 ms         | ease                                     |
 
 Under `prefers-reduced-motion` the spinner is the only exception: it keeps rotating slowly (1.4 s/turn, linear) because it communicates the submitting state. Page changes, the "mostrar" password toggle and the side steps are not animated. Never `transition: all`; never `ease-in`.
