@@ -50,6 +50,7 @@ Order when deciding: project patterns (these rules, existing code) > design skil
 - Familjen Grotesk: `title-l|m|s` (SemiBold), `body-l|m|s` (Regular), `label-m` (Medium), `button-m|s` (SemiBold).
 - DM Mono: `mono-l|m` (Medium), `mono-s` (Regular), `mono-eyebrow` (Medium, uppercase, 1.2 px tracking).
 - These are Tailwind utilities declared in `globals.css` (`@utility`); use them instead of `text-*`/`font-*` combinations.
+- `@utility` blocks in `globals.css` never use nested selectors (`&[data-open='true']`, `&:hover`): SonarQube reads them as CSS without a scoping root (`css:S8776`) and fails the quality gate. A state gets its own utility applied with a Tailwind variant (e.g. `motion-menu-panel` plus `data-[open=true]:motion-menu-panel-open`).
 - Data (documents, dates, amounts, codes) is always in DM Mono.
 
 ## Components and screens

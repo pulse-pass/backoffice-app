@@ -41,7 +41,7 @@ const refreshOnce = (current: SessionHandlers): Promise<string | null> => {
 const isRefreshRejected = (error: unknown): boolean =>
   axios.isAxiosError(error) && REFRESH_REJECTED_STATUSES.includes(error.response?.status ?? 0)
 
-const toRetry = (
+const buildRetryConfig = (
   config: InternalAxiosRequestConfig,
   current: SessionHandlers,
 ): InternalAxiosRequestConfig => {
@@ -73,7 +73,7 @@ api.interceptors.response.use(undefined, async (error: AxiosError) => {
 
   const currentToken = current.getAccessToken()
   if (currentToken && currentToken !== config.sentToken) {
-    return await api.request(toRetry(config, current))
+    return await api.request(buildRetryConfig(config, current))
   }
 
   let token: string | null
@@ -84,7 +84,7 @@ api.interceptors.response.use(undefined, async (error: AxiosError) => {
     throw error
   }
   if (!token) throw error
-  return await api.request(toRetry(config, current))
+  return await api.request(buildRetryConfig(config, current))
 })
 
 export const registerSessionHandlers = (value: SessionHandlers) => {

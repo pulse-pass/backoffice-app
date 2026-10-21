@@ -176,7 +176,7 @@ export function BackofficeNav({
             ref={panelRef}
             id={panelId}
             data-open={isMenuOpen}
-            className="motion-menu-panel absolute inset-x-md top-full z-10 mt-2xs flex items-center justify-between gap-md rounded-sm border border-border-strong bg-bg-surface p-md"
+            className="motion-menu-panel data-[open=true]:motion-menu-panel-open absolute inset-x-md top-full z-10 mt-2xs flex items-center justify-between gap-md rounded-sm border border-border-strong bg-bg-surface p-md"
           >
             <div className="min-w-0">
               <p className="label-m line-clamp-2 break-words">{displayName}</p>

@@ -270,14 +270,14 @@ a,
     opacity 100ms ease-out,
     transform 0s linear 100ms,
     visibility 0s linear 100ms;
+}
 
-  &[data-open='true'] {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
-    transition:
-      opacity 150ms ease-out,
-      transform 150ms ease-out,
-      visibility 0s;
-  }
+@utility motion-menu-panel-open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out,
+    visibility 0s;
 }
