@@ -9,7 +9,7 @@ import { getApiErrorMessage } from '@/services/api/api-error.handlers'
 import { createSessionForm } from '@/services/session/forms/create-session.form'
 import type { CreateSessionFieldKey } from '@/services/session/forms/create-session.form.types'
 import { sessionApi } from '@/services/session/session.api'
-import type { SessionResponse } from '@/services/session/session.types'
+import type { SessionProfile } from '@/services/session/session.types'
 import { sessionStore } from '@/stores/session.store'
 
 import type { LoginPageState } from './page.types'
@@ -25,9 +25,12 @@ function LoginPage() {
   const [state, setState] = useState<LoginPageState>(INITIAL_STATE)
   const fieldRefs = useRef<Partial<Record<CreateSessionFieldKey, HTMLInputElement | null>>>({})
   const isSubmittingRef = useRef(false)
+  const isHydrated = sessionStore.isHydrated
+  const role = sessionStore.role
+  const areaPath = sessionStore.areaPath
 
   useEffect(() => {
-    if (sessionStore.isHydrated && sessionStore.role) router.replace(sessionStore.areaPath)
+    if (isHydrated && role) router.replace(areaPath)
   })
 
   const registerField = (key: CreateSessionFieldKey) => (element: HTMLInputElement | null) => {
@@ -43,8 +46,8 @@ function LoginPage() {
     setState((current) => ({ ...current, submission: { isSubmitting } }))
   }
 
-  const rejectWithoutAccess = async (response: SessionResponse) => {
-    await sessionApi.deleteSession({ refresh_token: response.refresh_token }).catch(() => undefined)
+  const rejectWithoutAccess = async () => {
+    await sessionApi.deleteSession().catch(() => undefined)
     sessionStore.clear()
     toast.error('Esta conta não tem acesso ao backoffice.')
     setSubmitting(false)
@@ -90,17 +93,18 @@ function LoginPage() {
     }
 
     setSubmitting(true)
-    let response: SessionResponse
+    let profile: SessionProfile
     try {
-      response = await sessionApi.createSession(createSessionForm.toRequest(state.form.data))
+      await sessionApi.createSession(createSessionForm.toRequest(state.form.data))
+      profile = await sessionApi.getSession()
     } catch (error) {
       toast.error(getApiErrorMessage(error))
       setSubmitting(false)
       return
     }
-    sessionStore.setSession(response)
+    sessionStore.setProfile(profile)
     if (!sessionStore.role) {
-      await rejectWithoutAccess(response)
+      await rejectWithoutAccess()
       return
     }
     router.replace(sessionStore.areaPath)

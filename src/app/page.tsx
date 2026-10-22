@@ -8,9 +8,12 @@ import { sessionStore } from '@/stores/session.store'
 
 function Home() {
   const router = useRouter()
+  const isHydrated = sessionStore.isHydrated
+  const areaPath = sessionStore.areaPath
+
   useEffect(() => {
-    if (!sessionStore.isHydrated) return
-    router.replace(sessionStore.areaPath)
+    if (!isHydrated) return
+    router.replace(areaPath)
   })
 
   return (

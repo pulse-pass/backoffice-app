@@ -13,6 +13,7 @@ interface BackofficeNavProps {
   role: SessionRole
   homePath: string
   name?: string
+  companyName?: string
   activePath: string
   isLoggingOut: boolean
   onLogout: () => void
@@ -63,6 +64,7 @@ export function BackofficeNav({
   role,
   homePath,
   name,
+  companyName,
   activePath,
   isLoggingOut,
   onLogout,
@@ -113,6 +115,12 @@ export function BackofficeNav({
             <p className="mono-eyebrow text-text-inverse-secondary">Plataforma</p>
             <p className="title-s mt-xs">Administração PulsePass</p>
             <p className="mono-s mt-xs text-text-inverse-secondary">acesso total · auditado</p>
+          </div>
+        )}
+        {role === 'organizer' && companyName && (
+          <div className="mt-lg rounded-sm border border-border-inverse-strong p-md">
+            <p className="mono-eyebrow text-text-inverse-secondary">Empresa</p>
+            <p className="title-s mt-xs line-clamp-3 break-words">{companyName}</p>
           </div>
         )}
         <nav aria-label="Principal" className="mt-xl">

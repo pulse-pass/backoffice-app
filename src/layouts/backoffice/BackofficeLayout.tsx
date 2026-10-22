@@ -39,9 +39,7 @@ export const BackofficeLayout = observer(function BackofficeLayout({
     if (isLoggingOutRef.current) return
     isLoggingOutRef.current = true
     setState((current) => ({ ...current, logout: { isLoggingOut: true } }))
-    if (sessionStore.refreshToken) {
-      await sessionApi.deleteSession({ refresh_token: sessionStore.refreshToken }).catch(() => undefined)
-    }
+    await sessionApi.deleteSession().catch(() => undefined)
     sessionStore.clear()
     router.replace('/login')
   }
@@ -58,7 +56,8 @@ export const BackofficeLayout = observer(function BackofficeLayout({
     <BackofficeLayoutView
       role={role}
       homePath={sessionStore.areaPath}
-      name={sessionStore.claims?.name}
+      name={sessionStore.profile?.name}
+      companyName={sessionStore.profile?.legal_person?.name}
       activePath={pathname}
       isLoggingOut={state.logout.isLoggingOut}
       onLogout={handleLogout}
