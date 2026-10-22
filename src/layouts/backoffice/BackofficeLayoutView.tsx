@@ -6,6 +6,7 @@ export function BackofficeLayoutView({
   role,
   homePath,
   name,
+  companyName,
   activePath,
   isLoggingOut,
   onLogout,
@@ -17,6 +18,7 @@ export function BackofficeLayoutView({
         role={role}
         homePath={homePath}
         name={name}
+        companyName={companyName}
         activePath={activePath}
         isLoggingOut={isLoggingOut}
         onLogout={onLogout}

@@ -5,39 +5,15 @@ export interface CreateSessionRequest {
   password: string
 }
 
-export interface SessionResponse {
-  access_token: string
-  expires_in: number
-  refresh_token: string
-  refresh_expires_in: number
-  token_type: string
+export interface SessionLegalPerson {
+  legal_person_key: string
+  name: string
 }
 
-export interface RefreshSessionRequest {
-  refresh_token: string
-}
-
-export interface DeleteSessionRequest {
-  refresh_token: string
-}
-
-export interface AccessTokenPayload {
+export interface SessionProfile {
   person_key: string
-  legal_person_key?: string
-  name?: string
-  realm_access: { roles: string[] }
-  exp: number
-}
-
-export interface SessionClaims {
-  person_key: string
-  legal_person_key?: string
-  name?: string
+  name: string
+  document_number: string
   roles: string[]
-  exp: number
-}
-
-export interface StoredSession {
-  access_token: string
-  refresh_token: string
+  legal_person: SessionLegalPerson | null
 }
