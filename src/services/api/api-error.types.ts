@@ -10,7 +10,7 @@ export interface ErrorResponse {
   extra_fields: ExtraFieldError[]
 }
 
-export const isErrorResponse = (value: unknown): value is ErrorResponse => {
-  if (typeof value !== 'object' || value === null || !('message' in value)) return false
-  return typeof value.message === 'string'
+export interface ExpectedApiError {
+  status: number
+  code: string
 }
