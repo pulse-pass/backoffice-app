@@ -1,9 +1,3 @@
-const ROLES = [
-  { name: 'Organizador', description: 'Eventos, setores, lotes e o painel de vendas' },
-  { name: 'Dono da conta', description: 'Tudo do organizador, mais a equipe da empresa' },
-  { name: 'Administrador', description: 'Organizadores, métricas ao vivo e auditoria' },
-]
-
 const DOT_COUNT = 22
 
 export function LoginIntro() {
@@ -20,14 +14,13 @@ export function LoginIntro() {
           <span key={index} className="block size-1 rounded-full bg-text-inverse" />
         ))}
       </div>
-      <dl className="mt-xl hidden grid-cols-[auto_1fr] items-baseline gap-x-xl gap-y-md lg:grid">
-        {ROLES.map((role) => (
-          <div key={role.name} className="col-span-2 grid grid-cols-subgrid items-baseline">
-            <dt className="mono-eyebrow">{role.name}</dt>
-            <dd className="body-s text-text-inverse-secondary">{role.description}</dd>
-          </div>
-        ))}
-      </dl>
+      <div className="mt-xl hidden lg:block">
+        <p className="mono-eyebrow text-text-inverse">Primeiro acesso</p>
+        <p className="body-s mt-sm max-w-(--container-card) text-text-inverse-secondary">
+          Cadastre a sua empresa para começar a vender. Quem faz parte da equipe entra com o convite que chega
+          por e-mail.
+        </p>
+      </div>
     </section>
   )
 }

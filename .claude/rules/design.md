@@ -15,7 +15,8 @@ Order when deciding: project patterns (these rules, existing code) > design skil
 
 ## Login deviations
 
-- `/login` follows mockup 01 with two changes: the user is identified by CPF (mask, `autocomplete="username"`, numeric keyboard) instead of the e-mail, and there is no "Esqueci minha senha" link, since no recovery flow exists. The role list of the dark panel is desktop only (as in the 390 px mockup).
+- `/login` follows mockup 01 with two changes: the user is identified by CPF (mask, `autocomplete="username"`, numeric keyboard) instead of the e-mail, and there is no "Esqueci minha senha" link, since no recovery flow exists. The dark panel has no role list: below the dot row, desktop only, a "Primeiro acesso" block (mono eyebrow + `body-s` secondary text) tells new users to register the company or use the e-mail invite; on mobile the panel matches the 390 px mockup.
+- The tab icon is `src/app/icon.svg` and `src/app/apple-icon.png` (the `Logo` bars on a rounded Shadow Grey square; full square for the apple icon), with no `favicon.ico`. These icon files are the only place with hex literals, since they cannot read CSS tokens; the bars are 4 units wide with a 2-unit gap in the 32-unit `icon.svg`, so they stay 2 px wide in a 16 px tab.
 - Secondary text on the dark panel uses `text-text-inverse-secondary` (`--color-text-inverse-secondary`, alias of mist, 9:1 on shadow grey) instead of an opacity of the inverse text; `--container-card` (460 px) is the login card width.
 
 ## Navigation deviations
