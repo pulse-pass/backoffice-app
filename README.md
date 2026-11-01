@@ -35,17 +35,18 @@ A imagem é multi-stage, roda com usuário sem privilégios e expõe a porta 300
 
 ## Rotas da aplicação
 
-| Rota                | Descrição                                                             |
-| ------------------- | --------------------------------------------------------------------- |
-| `/`                 | Redireciona para `/cadastro`                                          |
-| `/cadastro`         | Autocadastro do organizador: dados da empresa e da pessoa responsável |
-| `/cadastro/enviado` | Confirmação de que o cadastro foi enviado                             |
+| Rota        | Descrição                                                             |
+| ----------- | --------------------------------------------------------------------- |
+| `/`         | Redireciona para `/cadastro`                                          |
+| `/cadastro` | Autocadastro do organizador: dados da empresa e da pessoa responsável |
+| `/login`    | Entrada no backoffice por CPF e senha                                 |
+| `/situacao` | Situação do cadastro do organizador: pendente ou reprovado            |
 
 ## Estrutura
 
 ```
 src/app/        rotas (page.tsx é o contêiner, PageView.tsx a apresentação)
-src/components/ componentes base do Figma (Logo, Button, Field, Toast, PublicHeader)
+src/components/ componentes base do Figma (Logo, Button, Field, Toast, PublicHeader, BackofficeNav, DotRow, EmptyState, StatusBadge, TimelineStep...)
 src/services/   chamadas ao gateway e tipos da API
 src/stores/     stores MobX
 src/utils/      máscaras e validações puras

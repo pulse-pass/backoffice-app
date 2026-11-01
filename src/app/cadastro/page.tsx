@@ -8,8 +8,6 @@ import { getApiErrorMessage } from '@/services/api/api-error.handlers'
 import { createLegalPersonForm } from '@/services/legal-person/forms/create-legal-person.form'
 import type { CreateLegalPersonFieldKey } from '@/services/legal-person/forms/create-legal-person.form.types'
 import { legalPersonApi } from '@/services/legal-person/legal-person.api'
-import type { CreateLegalPersonResponse } from '@/services/legal-person/legal-person.types'
-import { legalPersonStore } from '@/stores/legal-person.store'
 
 import type { CadastroPageState } from './page.types'
 import { PageView } from './PageView'
@@ -78,16 +76,15 @@ export default function CadastroPage() {
     }
 
     setSubmitting(true)
-    let response: CreateLegalPersonResponse
     try {
-      response = await legalPersonApi.createLegalPerson(createLegalPersonForm.toRequest(state.form.data))
+      await legalPersonApi.createLegalPerson(createLegalPersonForm.toRequest(state.form.data))
     } catch (error) {
       toast.error(getApiErrorMessage(error))
       setSubmitting(false)
       return
     }
-    legalPersonStore.setLegalPerson(response)
-    router.push('/cadastro/enviado')
+    toast.success('Cadastro enviado. Entre para acompanhar a análise.')
+    router.push('/login')
   }
 
   return (

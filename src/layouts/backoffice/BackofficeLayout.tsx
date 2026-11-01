@@ -4,8 +4,8 @@ import { observer } from 'mobx-react-lite'
 import { usePathname, useRouter } from 'next/navigation'
 import { type ReactNode, useEffect, useRef, useState } from 'react'
 
-import { sessionApi } from '@/services/session/session.api'
 import type { SessionRole } from '@/services/session/session.types'
+import { organizationStore } from '@/stores/organization.store'
 import { sessionStore } from '@/stores/session.store'
 
 import type { BackofficeLayoutState } from './backoffice-layout.types'
@@ -29,22 +29,26 @@ export const BackofficeLayout = observer(function BackofficeLayout({
   const [state, setState] = useState<BackofficeLayoutState>(INITIAL_STATE)
   const isLoggingOutRef = useRef(false)
 
+  const isHydrated = sessionStore.isHydrated
+  const sessionRole = sessionStore.role
+  const areaPath = sessionStore.areaPath
+  const isAreaOpen = sessionRole !== 'organizer' || organizationStore.organization?.status === 'APPROVED'
+
   useEffect(() => {
-    if (!sessionStore.isHydrated) return
-    if (!sessionStore.role) router.replace('/login')
-    else if (sessionStore.role !== role) router.replace(sessionStore.areaPath)
+    if (!isHydrated) return
+    if (!sessionRole) router.replace('/login')
+    else if (sessionRole !== role || !isAreaOpen) router.replace(areaPath)
   })
 
   const handleLogout = async () => {
     if (isLoggingOutRef.current) return
     isLoggingOutRef.current = true
     setState((current) => ({ ...current, logout: { isLoggingOut: true } }))
-    await sessionApi.deleteSession().catch(() => undefined)
-    sessionStore.clear()
+    await sessionStore.logout()
     router.replace('/login')
   }
 
-  if (!sessionStore.isHydrated || sessionStore.role !== role) {
+  if (!isHydrated || sessionRole !== role || !isAreaOpen) {
     return (
       <div role="status" className="sr-only">
         Carregando
@@ -55,7 +59,7 @@ export const BackofficeLayout = observer(function BackofficeLayout({
   return (
     <BackofficeLayoutView
       role={role}
-      homePath={sessionStore.areaPath}
+      homePath={areaPath}
       name={sessionStore.profile?.name}
       companyName={sessionStore.profile?.legal_person?.name}
       activePath={pathname}

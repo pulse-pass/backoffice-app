@@ -26,3 +26,19 @@ export interface CreateLegalPersonResponse {
   name: string
   email: string
 }
+
+export interface LegalPersonOwnerResponse {
+  person_key: string
+  name: string
+  document_number: string
+  email: string
+}
+
+export interface GetLegalPersonResponse {
+  legal_person_key: string
+  name: string
+  document_number: string
+  email: string
+  created_at: string
+  owner: LegalPersonOwnerResponse
+}
