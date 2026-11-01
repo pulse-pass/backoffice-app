@@ -24,6 +24,7 @@
   --color-border-strong: #21273866;
   --color-border-inverse-strong: #edf2ef80;
   --color-fill-subtle: #21273826;
+  --color-fill-muted: #545a66;
   --color-seat-occupied: var(--palette-mist);
   --color-ink: var(--palette-shadow-grey);
   --color-paper: var(--palette-platinum);
@@ -44,6 +45,7 @@
   --container-page: 1440px;
   --column-intro: 340px;
   --container-card: 460px;
+  --container-status: 760px;
   --sidebar-width: 264px;
 
   --font-display: var(--font-big-shoulders), sans-serif;

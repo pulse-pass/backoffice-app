@@ -1,4 +1,4 @@
-const DOT_COUNT = 22
+import { DotRow } from '@/components/DotRow'
 
 export function LoginIntro() {
   return (
@@ -9,11 +9,7 @@ export function LoginIntro() {
         As produtoras montam eventos, setores e lotes. A administração aprova quem vende e acompanha a
         plataforma ao vivo.
       </p>
-      <div className="mt-xl hidden justify-between lg:flex" aria-hidden="true">
-        {Array.from({ length: DOT_COUNT }, (_, index) => (
-          <span key={index} className="block size-1 rounded-full bg-text-inverse" />
-        ))}
-      </div>
+      <DotRow className="mt-xl hidden lg:flex" />
       <div className="mt-xl hidden lg:block">
         <p className="mono-eyebrow text-text-inverse">Primeiro acesso</p>
         <p className="body-s mt-sm max-w-(--container-card) text-text-inverse-secondary">

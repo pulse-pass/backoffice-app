@@ -1,5 +1,5 @@
 import { BaseApi } from '../api/base.api'
-import type { CreateSessionRequest, SessionProfile } from './session.types'
+import type { CreateSessionRequest, GetSessionResponse } from './session.types'
 
 export class SessionApi extends BaseApi {
   async createSession(data: CreateSessionRequest): Promise<void> {
@@ -14,8 +14,8 @@ export class SessionApi extends BaseApi {
     await this.post<void>('/auth/logout', undefined)
   }
 
-  async getSession(): Promise<SessionProfile> {
-    return await this.get<SessionProfile>('/auth/me')
+  async getSession(): Promise<GetSessionResponse> {
+    return await this.get<GetSessionResponse>('/auth/me')
   }
 }
 

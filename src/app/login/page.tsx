@@ -9,7 +9,8 @@ import { getApiErrorMessage } from '@/services/api/api-error.handlers'
 import { createSessionForm } from '@/services/session/forms/create-session.form'
 import type { CreateSessionFieldKey } from '@/services/session/forms/create-session.form.types'
 import { sessionApi } from '@/services/session/session.api'
-import type { SessionProfile } from '@/services/session/session.types'
+import type { GetSessionResponse } from '@/services/session/session.types'
+import { organizationStore } from '@/stores/organization.store'
 import { sessionStore } from '@/stores/session.store'
 
 import type { LoginPageState } from './page.types'
@@ -30,7 +31,7 @@ function LoginPage() {
   const areaPath = sessionStore.areaPath
 
   useEffect(() => {
-    if (isHydrated && role) router.replace(areaPath)
+    if (isHydrated && role && !isSubmittingRef.current) router.replace(areaPath)
   })
 
   const registerField = (key: CreateSessionFieldKey) => (element: HTMLInputElement | null) => {
@@ -47,8 +48,7 @@ function LoginPage() {
   }
 
   const rejectWithoutAccess = async () => {
-    await sessionApi.deleteSession().catch(() => undefined)
-    sessionStore.clear()
+    await sessionStore.logout()
     toast.error('Esta conta não tem acesso ao backoffice.')
     setSubmitting(false)
   }
@@ -93,7 +93,7 @@ function LoginPage() {
     }
 
     setSubmitting(true)
-    let profile: SessionProfile
+    let profile: GetSessionResponse
     try {
       await sessionApi.createSession(createSessionForm.toRequest(state.form.data))
       profile = await sessionApi.getSession()
@@ -106,6 +106,20 @@ function LoginPage() {
     if (!sessionStore.role) {
       await rejectWithoutAccess()
       return
+    }
+    if (sessionStore.role === 'organizer') {
+      try {
+        await organizationStore.fetchOrganization()
+      } catch (error) {
+        await sessionStore.logout()
+        toast.error(getApiErrorMessage(error))
+        setSubmitting(false)
+        return
+      }
+      if (!organizationStore.hasAccess) {
+        await rejectWithoutAccess()
+        return
+      }
     }
     router.replace(sessionStore.areaPath)
   }

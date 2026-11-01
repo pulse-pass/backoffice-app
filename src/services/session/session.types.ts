@@ -5,15 +5,15 @@ export interface CreateSessionRequest {
   password: string
 }
 
-export interface SessionLegalPerson {
+export interface SessionLegalPersonResponse {
   legal_person_key: string
   name: string
 }
 
-export interface SessionProfile {
+export interface GetSessionResponse {
   person_key: string
   name: string
   document_number: string
   roles: string[]
-  legal_person: SessionLegalPerson | null
+  legal_person: SessionLegalPersonResponse | null
 }
