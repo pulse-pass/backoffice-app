@@ -27,7 +27,7 @@ export function PageView({
     )
   }
 
-  const isRejected = organization?.status === 'REJECTED'
+  const isRejected = organization?.organization_status === 'REJECTED'
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -55,13 +55,13 @@ export function PageView({
             <div className="overflow-hidden rounded-sm border border-border-subtle bg-bg-surface">
               <StatusHero
                 isRejected={isRejected}
-                hasReason={Boolean(organization.rejection_reason_description)}
+                hasReason={Boolean(organization.organization_rejection_reason_description)}
                 createdAt={organization.created_at}
                 companyName={organization.name}
               />
               <div className="flex flex-col gap-lg px-md py-lg md:px-xl">
-                {isRejected && organization.rejection_reason_description && (
-                  <RejectionReason description={organization.rejection_reason_description} />
+                {isRejected && organization.organization_rejection_reason_description && (
+                  <RejectionReason description={organization.organization_rejection_reason_description} />
                 )}
                 <StatusTimeline
                   isRejected={isRejected}

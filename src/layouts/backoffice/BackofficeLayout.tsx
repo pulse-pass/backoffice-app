@@ -32,7 +32,8 @@ export const BackofficeLayout = observer(function BackofficeLayout({
   const isHydrated = sessionStore.isHydrated
   const sessionRole = sessionStore.role
   const areaPath = sessionStore.areaPath
-  const isAreaOpen = sessionRole !== 'organizer' || organizationStore.organization?.status === 'APPROVED'
+  const isAreaOpen =
+    sessionRole !== 'organizer' || organizationStore.organization?.organization_status === 'APPROVED'
 
   useEffect(() => {
     if (!isHydrated) return

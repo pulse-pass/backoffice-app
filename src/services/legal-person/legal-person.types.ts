@@ -42,3 +42,19 @@ export interface GetLegalPersonResponse {
   created_at: string
   owner: LegalPersonOwnerResponse
 }
+
+export interface PersonPhoneNumberResponse {
+  country_code: string
+  area_code: string
+  number: string
+}
+
+export interface GetInternalLegalPersonResponse {
+  legal_person_key: string
+  name: string
+  document_number: string
+  email: string
+  phone_numbers: PersonPhoneNumberResponse[]
+  created_at: string
+  owner: LegalPersonOwnerResponse
+}

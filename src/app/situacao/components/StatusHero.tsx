@@ -16,7 +16,7 @@ export function StatusHero({ isRejected, hasReason, createdAt, companyName }: St
       <h1 className="display-m md:display-l mt-md">
         {isRejected ? 'Cadastro reprovado.' : 'Cadastro em análise.'}
       </h1>
-      <StatusBadge status={isRejected ? 'rejected' : 'pending'} className="mt-md" />
+      <StatusBadge status={isRejected ? 'rejected' : 'pending'} inverse className="mt-md" />
       <p className="body-m mt-md text-text-inverse-secondary">
         {isRejected
           ? `A administração da PulsePass analisou os dados da ${companyName} e não aprovou o cadastro.${hasReason ? ' O motivo está abaixo.' : ''} Sem aprovação, o acesso às funções de organizador continua bloqueado.`

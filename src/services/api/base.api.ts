@@ -3,8 +3,8 @@ import api from '@/lib/axios'
 export abstract class BaseApi {
   protected api = api
 
-  protected async get<T>(path: string): Promise<T> {
-    const response = await this.api.get<T>(path)
+  protected async get<T>(path: string, params?: object): Promise<T> {
+    const response = await this.api.get<T>(path, { params })
     return response.data
   }
 
