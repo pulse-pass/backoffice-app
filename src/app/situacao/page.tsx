@@ -68,7 +68,7 @@ function SituacaoPage() {
 
   useEffect(() => {
     if (!isHydrated) return
-    if (role !== 'organizer' || organization?.status === 'APPROVED') {
+    if (role !== 'organizer' || organization?.organization_status === 'APPROVED') {
       router.replace(areaPath)
       return
     }

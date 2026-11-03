@@ -17,10 +17,15 @@ type ActionButtonProps = BaseButtonProps &
   Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseButtonProps> & {
     href?: undefined
     loading?: boolean
+    loadingLabel?: string
   }
 
 type LinkButtonProps = BaseButtonProps &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof BaseButtonProps> & { href: string; loading?: never }
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof BaseButtonProps> & {
+    href: string
+    loading?: never
+    loadingLabel?: never
+  }
 
 type ButtonProps = ActionButtonProps | LinkButtonProps
 
@@ -44,6 +49,7 @@ export function Button({
   variant = 'primary',
   size = 'm',
   loading = false,
+  loadingLabel = 'Enviando',
   className,
   children,
   ...rest
@@ -63,7 +69,7 @@ export function Button({
           <span className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
             <span className="block size-4 animate-spin-button rounded-full border-2 border-current border-t-transparent" />
           </span>
-          <span className="sr-only">Enviando</span>
+          <span className="sr-only">{loadingLabel}</span>
         </>
       )}
       <span className={classNames('inline-flex items-center gap-xs', loading && 'opacity-0')}>

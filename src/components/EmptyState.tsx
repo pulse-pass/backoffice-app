@@ -11,7 +11,7 @@ export function EmptyState({ message, title, action, titleAs: Title = 'h2' }: Em
   if (!title && !action) {
     return (
       <div className="rounded-sm border border-dashed border-border-strong px-md py-2xl text-center">
-        <p className="body-m text-text-secondary">{message}</p>
+        <p className="body-m break-words text-text-secondary">{message}</p>
       </div>
     )
   }

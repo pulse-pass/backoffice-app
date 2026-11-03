@@ -11,7 +11,7 @@ class OrganizationStore {
   }
 
   get hasAccess() {
-    return this.organization !== null && this.organization.status !== 'DELETED'
+    return this.organization !== null && this.organization.organization_status !== 'DELETED'
   }
 
   setOrganization(organization: ListOrganizationsResponse | null) {

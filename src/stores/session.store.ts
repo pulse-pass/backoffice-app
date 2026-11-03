@@ -22,7 +22,7 @@ class SessionStore {
   get areaPath(): string {
     if (this.role === 'admin') return '/organizadores'
     if (this.role === 'organizer')
-      return organizationStore.organization?.status === 'APPROVED' ? '/eventos' : '/situacao'
+      return organizationStore.organization?.organization_status === 'APPROVED' ? '/eventos' : '/situacao'
     return '/login'
   }
 

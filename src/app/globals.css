@@ -46,6 +46,8 @@
   --column-intro: 340px;
   --container-card: 460px;
   --container-status: 760px;
+  --column-search: 320px;
+  --column-detail: 496px;
   --sidebar-width: 264px;
 
   --font-display: var(--font-big-shoulders), sans-serif;
