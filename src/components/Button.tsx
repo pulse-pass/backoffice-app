@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode, Ref } from 'react'
 
 import { classNames } from '@/utils/class-name.handlers'
 
@@ -16,6 +16,7 @@ interface BaseButtonProps {
 type ActionButtonProps = BaseButtonProps &
   Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseButtonProps> & {
     href?: undefined
+    ref?: Ref<HTMLButtonElement>
     loading?: boolean
     loadingLabel?: string
   }
