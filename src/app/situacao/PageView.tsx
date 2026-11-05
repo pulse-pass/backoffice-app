@@ -1,10 +1,10 @@
+import { Alert } from '@/components/Alert'
 import { Button } from '@/components/Button'
 import { EmptyState } from '@/components/EmptyState'
 import { PublicHeader } from '@/components/PublicHeader'
 import { formatCNPJ } from '@/utils/cnpj.handlers'
 
 import { ContactFooter } from './components/ContactFooter'
-import { RejectionReason } from './components/RejectionReason'
 import { StatusHero } from './components/StatusHero'
 import { StatusTimeline } from './components/StatusTimeline'
 import { SubmittedData } from './components/SubmittedData'
@@ -61,7 +61,9 @@ export function PageView({
               />
               <div className="flex flex-col gap-lg px-md py-lg md:px-xl">
                 {isRejected && organization.organization_rejection_reason_description && (
-                  <RejectionReason description={organization.organization_rejection_reason_description} />
+                  <Alert type="danger" title="Motivo informado pela administração" titleAs="h2">
+                    {organization.organization_rejection_reason_description}
+                  </Alert>
                 )}
                 <StatusTimeline
                   isRejected={isRejected}

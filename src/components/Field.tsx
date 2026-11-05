@@ -1,4 +1,4 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode, useId } from 'react'
+import { type InputHTMLAttributes, type ReactNode, type Ref, useId } from 'react'
 
 import { classNames } from '@/utils/class-name.handlers'
 
@@ -8,12 +8,21 @@ interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
   error?: string
   numeric?: boolean
   action?: ReactNode
+  ref?: Ref<HTMLInputElement>
 }
 
-export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
-  { label, hint, error, numeric = false, action, id, className, required, ...props },
+export function Field({
+  label,
+  hint,
+  error,
+  numeric = false,
+  action,
+  id,
+  className,
+  required,
   ref,
-) {
+  ...props
+}: FieldProps) {
   const generatedId = useId()
   const inputId = id ?? generatedId
   const hintId = `${inputId}-hint`
@@ -50,7 +59,11 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
         {action && <div className="flex items-center pr-sm pl-xs">{action}</div>}
       </div>
       {error && (
-        <p id={errorId} className="body-s flex animate-fade-in items-start gap-xs text-text-primary">
+        <p
+          id={errorId}
+          role="alert"
+          className="body-s flex animate-fade-in items-start gap-xs text-text-primary"
+        >
           <span className="mt-2xs block size-2 shrink-0 rounded-full bg-feedback-danger" aria-hidden="true" />
           {error}
         </p>
@@ -62,4 +75,4 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
       )}
     </div>
   )
-})
+}

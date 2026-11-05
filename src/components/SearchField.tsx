@@ -1,15 +1,13 @@
-import { forwardRef, type InputHTMLAttributes } from 'react'
+import type { InputHTMLAttributes, Ref } from 'react'
 
 import { classNames } from '@/utils/class-name.handlers'
 
 interface SearchFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'type'> {
   label: string
+  ref?: Ref<HTMLInputElement>
 }
 
-export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(function SearchField(
-  { label, className, ...props },
-  ref,
-) {
+export function SearchField({ label, className, ref, ...props }: SearchFieldProps) {
   return (
     <div
       className={classNames(
@@ -41,4 +39,4 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
       />
     </div>
   )
-})
+}

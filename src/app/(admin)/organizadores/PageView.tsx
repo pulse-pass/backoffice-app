@@ -18,12 +18,22 @@ export function PageView({
   list,
   selectedOrganization,
   detail,
+  actions,
+  rejectionReasons,
   onStatusChange,
   onSearchChange,
   onSelect,
   onLoadMore,
   onRetryList,
   onRetryDetail,
+  onRejectionReasonChange,
+  onRetryRejectionReasons,
+  onApprove,
+  onReject,
+  onRequestRemoval,
+  onCancelRemoval,
+  onConfirmRemoval,
+  tabPanelRef,
 }: PageViewProps) {
   const sideDetailId = useId()
   const inlineDetailId = useId()
@@ -41,7 +51,16 @@ export function PageView({
         legalPerson={detail.legalPerson}
         isLoading={detail.isLoading}
         hasError={detail.hasError}
+        actions={actions}
+        rejectionReasons={rejectionReasons}
         onRetry={onRetryDetail}
+        onRejectionReasonChange={onRejectionReasonChange}
+        onRetryRejectionReasons={onRetryRejectionReasons}
+        onApprove={onApprove}
+        onReject={onReject}
+        onRequestRemoval={onRequestRemoval}
+        onCancelRemoval={onCancelRemoval}
+        onConfirmRemoval={onConfirmRemoval}
       />
     )
 
@@ -73,7 +92,13 @@ export function PageView({
         />
       </div>
       <div className="grid gap-lg lg:grid-cols-2 lg:items-start xl:grid-cols-[minmax(0,1fr)_var(--column-detail)]">
-        <div id={`${TABS_ID}-panel`} role="tabpanel" aria-labelledby={`${TABS_ID}-tab-${filters.status}`}>
+        <div
+          ref={tabPanelRef}
+          id={`${TABS_ID}-panel`}
+          role="tabpanel"
+          tabIndex={-1}
+          aria-labelledby={`${TABS_ID}-tab-${filters.status}`}
+        >
           <OrganizerList
             status={filters.status}
             search={list.appliedSearch}

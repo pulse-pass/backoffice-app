@@ -10,7 +10,10 @@ import { formatCPF } from '@/utils/cpf.handlers'
 import { formatDate, formatTime } from '@/utils/date.handlers'
 import { formatPhone } from '@/utils/phone.handlers'
 
-interface OrganizerDetailProps {
+import type { OrganizerActionsProps } from '../page.types'
+import { OrganizerActions } from './OrganizerActions'
+
+interface OrganizerDetailProps extends OrganizerActionsProps {
   id: string
   organization: ListInternalOrganizationsResponse
   legalPerson: GetInternalLegalPersonResponse | null
@@ -89,7 +92,16 @@ export function OrganizerDetail({
   legalPerson,
   isLoading,
   hasError,
+  actions,
+  rejectionReasons,
   onRetry,
+  onRejectionReasonChange,
+  onRetryRejectionReasons,
+  onApprove,
+  onReject,
+  onRequestRemoval,
+  onCancelRemoval,
+  onConfirmRemoval,
 }: OrganizerDetailProps) {
   const titleId = useId()
 
@@ -97,7 +109,7 @@ export function OrganizerDetail({
     <section
       id={id}
       aria-labelledby={titleId}
-      className="flex flex-col gap-lg rounded-sm border-2 border-accent-selected bg-bg-surface p-md md:p-lg"
+      className="@container flex flex-col gap-lg rounded-sm border-2 border-accent-selected bg-bg-surface p-md md:p-lg"
     >
       <header className="flex flex-col gap-md">
         <p className="mono-eyebrow flex flex-col gap-2xs text-text-secondary">
@@ -123,6 +135,20 @@ export function OrganizerDetail({
         </div>
       )}
       {legalPerson && <DetailSections organization={organization} legalPerson={legalPerson} />}
+      {legalPerson && (
+        <OrganizerActions
+          organization={organization}
+          actions={actions}
+          rejectionReasons={rejectionReasons}
+          onRejectionReasonChange={onRejectionReasonChange}
+          onRetryRejectionReasons={onRetryRejectionReasons}
+          onApprove={onApprove}
+          onReject={onReject}
+          onRequestRemoval={onRequestRemoval}
+          onCancelRemoval={onCancelRemoval}
+          onConfirmRemoval={onConfirmRemoval}
+        />
+      )}
     </section>
   )
 }
