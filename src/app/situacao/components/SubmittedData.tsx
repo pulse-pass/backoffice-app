@@ -1,14 +1,16 @@
-import type { GetLegalPersonResponse } from '@/services/legal-person/legal-person.types'
+import type { ListLegalPersonCollaboratorsResponse } from '@/services/legal-person-collaborator/legal-person-collaborator.types'
 import type { ListOrganizationsResponse } from '@/services/organization/organization.types'
+import type { PersonLegalPersonResponse } from '@/services/person/person.types'
 import { formatCNPJ } from '@/utils/cnpj.handlers'
 import { formatCPF } from '@/utils/cpf.handlers'
 
 interface SubmittedDataProps {
   organization: ListOrganizationsResponse
-  legalPerson: GetLegalPersonResponse
+  legalPerson: PersonLegalPersonResponse
+  owner: ListLegalPersonCollaboratorsResponse
 }
 
-export function SubmittedData({ organization, legalPerson }: SubmittedDataProps) {
+export function SubmittedData({ organization, legalPerson, owner }: SubmittedDataProps) {
   return (
     <section aria-labelledby="submitted-data-title" className="border-t border-border-subtle pt-lg">
       <h2 id="submitted-data-title" className="mono-eyebrow text-text-secondary">
@@ -26,8 +28,8 @@ export function SubmittedData({ organization, legalPerson }: SubmittedDataProps)
         <div className="min-w-0">
           <dt className="body-s text-text-secondary">Responsável</dt>
           <dd className="label-m mt-2xs break-words text-text-primary">
-            {legalPerson.owner.name} ·{' '}
-            <span className="mono-s">{formatCPF(legalPerson.owner.document_number)}</span>
+            {owner.natural_person.person.name} ·{' '}
+            <span className="mono-s">{formatCPF(owner.natural_person.person.document_number)}</span>
           </dd>
         </div>
         <div className="min-w-0">

@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 import { toast } from '@/lib/toast'
+import type { PaginatedResponse } from '@/services/api/api.types'
 import { getApiErrorMessage } from '@/services/api/api-error.handlers'
-import { legalPersonApi } from '@/services/legal-person/legal-person.api'
-import type { GetLegalPersonResponse } from '@/services/legal-person/legal-person.types'
+import { legalPersonCollaboratorApi } from '@/services/legal-person-collaborator/legal-person-collaborator.api'
+import type { ListLegalPersonCollaboratorsResponse } from '@/services/legal-person-collaborator/legal-person-collaborator.types'
+import { personApi } from '@/services/person/person.api'
+import type { GetPersonResponse } from '@/services/person/person.types'
 import { organizationStore } from '@/stores/organization.store'
 import { sessionStore } from '@/stores/session.store'
 
@@ -16,7 +19,8 @@ import { PageView } from './PageView'
 
 const INITIAL_STATE: SituacaoPageState = {
   load: { status: 'loading', isRetrying: false },
-  legalPerson: null,
+  person: null,
+  owner: null,
   logout: { isLoggingOut: false },
 }
 
@@ -41,29 +45,33 @@ function SituacaoPage() {
   }
 
   const loadStatus = async (shouldFetchOrganization: boolean) => {
-    const legalPersonKey = sessionStore.profile?.legal_person?.legal_person_key
-    if (!legalPersonKey) {
+    const personKey = sessionStore.profile?.legal_person?.legal_person_key
+    if (!personKey) {
       await rejectWithoutAccess()
       return
     }
-    let legalPerson: GetLegalPersonResponse
+    let responses: [GetPersonResponse, PaginatedResponse<ListLegalPersonCollaboratorsResponse>, void]
     try {
-      const legalPersonRequest = legalPersonApi.getLegalPerson(legalPersonKey)
+      const personRequest = personApi.getPerson(personKey)
+      const ownerRequest = legalPersonCollaboratorApi.listLegalPersonCollaborators(personKey, {
+        collaborator_role: 'OWNER',
+      })
       const organizationRequest = shouldFetchOrganization
         ? organizationStore.fetchOrganization()
         : Promise.resolve()
-      const [legalPersonResponse] = await Promise.all([legalPersonRequest, organizationRequest])
-      legalPerson = legalPersonResponse
+      responses = await Promise.all([personRequest, ownerRequest, organizationRequest])
     } catch (error) {
       toast.error(getApiErrorMessage(error))
       setLoad({ status: 'error', isRetrying: false })
       return
     }
+    const [person, ownerResponse] = responses
+    const owner = ownerResponse.data[0]
     if (!organizationStore.hasAccess) {
       await rejectWithoutAccess()
       return
     }
-    setState((current) => ({ ...current, load: { status: 'ready', isRetrying: false }, legalPerson }))
+    setState((current) => ({ ...current, load: { status: 'ready', isRetrying: false }, person, owner }))
   }
 
   useEffect(() => {
@@ -95,7 +103,8 @@ function SituacaoPage() {
       status={state.load.status}
       isRetrying={state.load.isRetrying}
       organization={organization}
-      legalPerson={state.legalPerson}
+      person={state.person}
+      owner={state.owner}
       isLoggingOut={state.logout.isLoggingOut}
       onLogout={handleLogout}
       onRetry={handleRetry}

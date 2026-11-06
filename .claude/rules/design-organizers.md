@@ -14,6 +14,7 @@ paths:
 - **BAP-097** No owner name in the row: the list endpoint does not carry it, and loading it per row would be one request per company. The row shows razão social, CNPJ, "Criado em" and the badge.
 - **BAP-098** No events/team line in the approved detail (data not available).
 - **BAP-099** The detail shows the contact with e-mail and the phones, one per line, because a company can have several.
+- **BAP-361** The detail loads the person (`GET /internal/persons/{person_key}`) and the owner (`GET /internal/legal_persons/{legal_person_key}/collaborators?collaborator_role=OWNER`, first item of `data`) in parallel; the loading and error states cover both, and the owner block reads name, CPF and e-mail from that collaborator.
 - **BAP-100** The company block of the detail also shows "Tipo da empresa", "Faturamento mensal" and "Endereço" (logradouro and number, complement, neighborhood, CEP with mask), all with `break-words`; mockups 08 and 08b do not have them.
 - **BAP-101** The list is paged by 30 with a "Carregar mais" outline button, shown only when the last page came full, instead of the mockup's fixed list.
 - **BAP-102** The search is debounced (300 ms) and sends one field: text made only of digits, `.`, `/` or `-` goes as the CNPJ, anything else as the name.
