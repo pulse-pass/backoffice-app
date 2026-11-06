@@ -98,17 +98,8 @@ const getValue = (data: CreateLegalPersonFormData, key: CreateLegalPersonFieldKe
   return values[field]
 }
 
-const isOwnerUsingCompanyEmail = ({ company, owner }: CreateLegalPersonFormData): boolean =>
-  company.email.trim().toLowerCase() === owner.email.trim().toLowerCase()
-
-const validateField = (
-  data: CreateLegalPersonFormData,
-  key: CreateLegalPersonFieldKey,
-): string | undefined => {
-  const message = validateValue(getValue(data, key), RULES[key])
-  if (message || key !== 'owner.email' || !isOwnerUsingCompanyEmail(data)) return message
-  return 'Use um e-mail diferente do e-mail da empresa.'
-}
+const validateField = (data: CreateLegalPersonFormData, key: CreateLegalPersonFieldKey): string | undefined =>
+  validateValue(getValue(data, key), RULES[key])
 
 export const createLegalPersonForm: Form<
   CreateLegalPersonFormData,

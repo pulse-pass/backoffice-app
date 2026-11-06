@@ -6,8 +6,8 @@ import { toast } from '@/lib/toast'
 import type { PaginatedResponse } from '@/services/api/api.types'
 import { getApiErrorMessage, isExpectedApiError } from '@/services/api/api-error.handlers'
 import type { ExpectedApiError } from '@/services/api/api-error.types'
-import { legalPersonApi } from '@/services/legal-person/legal-person.api'
-import type { GetInternalLegalPersonResponse } from '@/services/legal-person/legal-person.types'
+import { legalPersonCollaboratorApi } from '@/services/legal-person-collaborator/legal-person-collaborator.api'
+import type { ListInternalLegalPersonCollaboratorsResponse } from '@/services/legal-person-collaborator/legal-person-collaborator.types'
 import { organizationApi } from '@/services/organization/organization.api'
 import { ORGANIZATION_ERRORS } from '@/services/organization/organization.errors'
 import type {
@@ -16,6 +16,8 @@ import type {
   ListInternalOrganizationsResponse,
   OrganizationStatus,
 } from '@/services/organization/organization.types'
+import { personApi } from '@/services/person/person.api'
+import type { GetInternalPersonResponse } from '@/services/person/person.types'
 import { onlyDigits } from '@/utils/document.handlers'
 
 import type { OrganizersPageState } from './page.types'
@@ -32,7 +34,8 @@ const INITIAL_ACTIONS: OrganizersPageState['actions'] = {
   pendingOrganizationKey: null,
 }
 const INITIAL_DETAIL: OrganizersPageState['detail'] = {
-  legalPerson: null,
+  person: null,
+  owner: null,
   isLoading: false,
   hasError: false,
 }
@@ -112,20 +115,36 @@ function OrganizersPage() {
     clearDebounce()
   }, [clearDebounce])
 
-  const loadDetail = async (legalPersonKey: string) => {
+  const loadDetail = async (personKey: string) => {
     const requestId = ++detailRequestIdRef.current
-    setState((current) => ({ ...current, detail: { legalPerson: null, isLoading: true, hasError: false } }))
-    let legalPerson: GetInternalLegalPersonResponse
+    setState((current) => ({
+      ...current,
+      detail: { person: null, owner: null, isLoading: true, hasError: false },
+    }))
+    let responses: [
+      GetInternalPersonResponse,
+      PaginatedResponse<ListInternalLegalPersonCollaboratorsResponse>,
+    ]
     try {
-      legalPerson = await legalPersonApi.getInternalLegalPerson(legalPersonKey)
+      responses = await Promise.all([
+        personApi.getInternalPerson(personKey),
+        legalPersonCollaboratorApi.listInternalLegalPersonCollaborators(personKey, {
+          collaborator_role: 'OWNER',
+        }),
+      ])
     } catch (error) {
       if (requestId !== detailRequestIdRef.current) return
       toast.error(getApiErrorMessage(error))
-      setState((current) => ({ ...current, detail: { legalPerson: null, isLoading: false, hasError: true } }))
+      setState((current) => ({
+        ...current,
+        detail: { person: null, owner: null, isLoading: false, hasError: true },
+      }))
       return
     }
     if (requestId !== detailRequestIdRef.current) return
-    setState((current) => ({ ...current, detail: { legalPerson, isLoading: false, hasError: false } }))
+    const [person, ownerResponse] = responses
+    const owner = ownerResponse.data[0]
+    setState((current) => ({ ...current, detail: { person, owner, isLoading: false, hasError: false } }))
   }
 
   const clearSelection = () => {

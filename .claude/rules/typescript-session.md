@@ -48,7 +48,7 @@ paths:
 - **BAP-327** A profile without a backoffice role (buyer), or an organizer without organization or with a `DELETED` one, goes through `sessionStore.logout()` and the fixed "no access" toast; otherwise it goes to `sessionStore.areaPath`.
 - **BAP-328** The already-signed-in redirect of `/login` is skipped while a submission is in flight.
 - **BAP-329** `/situacao` waits for `isHydrated`; without the organizer role or with an `APPROVED` organization it does `router.replace(sessionStore.areaPath)`.
-- **BAP-330** `/situacao` loads the legal person by key and, only when the store has none, the organization, in parallel; a retry repeats both and a `404` is a load error.
+- **BAP-330** `/situacao` loads the person by key (`GET /persons/{person_key}`), the owner (`GET /legal_persons/{legal_person_key}/collaborators?collaborator_role=OWNER`, first item of `data`) and, only when the store has none, the organization, in parallel; a retry repeats both and a `404` is a load error.
 - **BAP-331** `/situacao` treats a missing or `DELETED` organization as no access (`sessionStore.logout()`, toast, `/login`).
 - **BAP-332** `BackofficeLayout` renders the loading status until `sessionStore.isHydrated`; without a session it does `router.replace('/login')`.
 - **BAP-333** With another role, or an organizer whose organization is not `APPROVED`, it does `router.replace(sessionStore.areaPath)` (one rule, `isAreaOpen`).

@@ -7,8 +7,7 @@ paths:
 
 # Design: registration
 
-- **BAP-166** In `/cadastro`, the owner e-mail must differ from the company e-mail: the form shows a local error on the owner field.
-- **BAP-167** An e-mail already used by another person comes from the API (409 `ONB00010`) and is shown in a toast.
+- **BAP-167** An e-mail already used by another company comes from the API (409 `ONB00010`) and is shown in a toast.
 - **BAP-168** `/cadastro` follows mockup 02 with fields the mockup does not have, required at approval.
 - **BAP-169** In Empresa: "Tipo da empresa" (`Select`, empty option "Selecione o tipo") and "Faturamento mensal" (`Field` with the `R$ 0,00` mask, `numeric`), after the phone in the two-column grid.
 - **BAP-170** A new numbered section `02` "Endereço" sits between Empresa and the owner, so the owner section becomes `03`: CEP (`00000-000` mask), Logradouro, Número and Complemento (opcional) in two columns, Bairro.

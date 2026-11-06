@@ -14,7 +14,7 @@ paths:
 
 - **BAP-202** `<resource>.api.ts` declares `class <Resource>Api extends BaseApi` (`src/services/api/base.api.ts`) and the exported singleton `<resource>Api`.
 - **BAP-203** One method per route, named after the action (`createLegalPerson`).
-- **BAP-204** Routes under `/internal` (admin only, through the `backoffice-gateway`) are named `<action>Internal<Resource>` (`listInternalOrganizations`, `getInternalLegalPerson`).
+- **BAP-204** Routes under `/internal` (admin only, through the `backoffice-gateway`) are named `<action>Internal<Resource>` (`listInternalOrganizations`, `getInternalPerson`).
 - **BAP-205** `BaseApi.get(path, params?)` forwards the optional `params` to axios as the query string (an `undefined` value is omitted).
 - **BAP-206** `listInternalOrganizations` filters by the optional `name` (prefix of the razão social) and `document_number` (exact CNPJ, digits only: a partial CNPJ finds nothing until it is complete).
 - **BAP-207** `src/lib/axios.ts` is the single axios instance (`baseURL`, JSON, `Accept-Language: pt-BR`, 30 s timeout); it sends the gateway cookies and the CSRF header.

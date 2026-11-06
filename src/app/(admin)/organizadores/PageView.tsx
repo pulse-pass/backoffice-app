@@ -48,7 +48,8 @@ export function PageView({
       <OrganizerDetail
         id={id}
         organization={selectedOrganization}
-        legalPerson={detail.legalPerson}
+        person={detail.person}
+        owner={detail.owner}
         isLoading={detail.isLoading}
         hasError={detail.hasError}
         actions={actions}

@@ -14,7 +14,8 @@ export function PageView({
   status,
   isRetrying,
   organization,
-  legalPerson,
+  person,
+  owner,
   isLoggingOut,
   onLogout,
   onRetry,
@@ -39,7 +40,7 @@ export function PageView({
         }
       />
       <main className="mx-auto w-full max-w-(--container-status) px-md py-lg md:py-2xl">
-        {status === 'error' || !organization || !legalPerson ? (
+        {status === 'error' || !organization || !person?.legal_person || !owner ? (
           <EmptyState
             title="Não foi possível carregar a situação do cadastro."
             message="Confira a conexão e tente de novo."
@@ -70,7 +71,7 @@ export function PageView({
                   createdAt={organization.created_at}
                   updatedAt={organization.updated_at}
                 />
-                <SubmittedData organization={organization} legalPerson={legalPerson} />
+                <SubmittedData organization={organization} legalPerson={person.legal_person} owner={owner} />
               </div>
             </div>
             <ContactFooter isRejected={isRejected} cnpj={formatCNPJ(organization.document_number)} />

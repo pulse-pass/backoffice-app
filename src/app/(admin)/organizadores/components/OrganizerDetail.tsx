@@ -3,9 +3,13 @@ import { useId } from 'react'
 import { Button } from '@/components/Button'
 import { StatusBadge } from '@/components/StatusBadge'
 import { getCompanyTypeLabel } from '@/services/legal-person/legal-person.handlers'
-import type { GetInternalLegalPersonResponse } from '@/services/legal-person/legal-person.types'
+import type { ListInternalLegalPersonCollaboratorsResponse } from '@/services/legal-person-collaborator/legal-person-collaborator.types'
 import { getBadgeStatus } from '@/services/organization/organization.handlers'
 import type { ListInternalOrganizationsResponse } from '@/services/organization/organization.types'
+import type {
+  GetInternalPersonResponse,
+  PersonInternalLegalPersonResponse,
+} from '@/services/person/person.types'
 import { formatCNPJ } from '@/utils/cnpj.handlers'
 import { formatCPF } from '@/utils/cpf.handlers'
 import { formatCurrency } from '@/utils/currency.handlers'
@@ -19,7 +23,8 @@ import { OrganizerActions } from './OrganizerActions'
 interface OrganizerDetailProps extends OrganizerActionsProps {
   id: string
   organization: ListInternalOrganizationsResponse
-  legalPerson: GetInternalLegalPersonResponse | null
+  person: GetInternalPersonResponse | null
+  owner: ListInternalLegalPersonCollaboratorsResponse | null
   isLoading: boolean
   hasError: boolean
   onRetry: () => void
@@ -27,12 +32,15 @@ interface OrganizerDetailProps extends OrganizerActionsProps {
 
 interface DetailSectionsProps {
   organization: ListInternalOrganizationsResponse
-  legalPerson: GetInternalLegalPersonResponse
+  name: string
+  phoneNumbers: GetInternalPersonResponse['phone_numbers']
+  legalPerson: PersonInternalLegalPersonResponse
+  owner: ListInternalLegalPersonCollaboratorsResponse
 }
 
 const formatDateAtTime = (value: string): string => `${formatDate(value)} às ${formatTime(value)}`
 
-function DetailSections({ organization, legalPerson }: DetailSectionsProps) {
+function DetailSections({ organization, name, phoneNumbers, legalPerson, owner }: DetailSectionsProps) {
   const companyTitleId = useId()
   const ownerTitleId = useId()
 
@@ -49,13 +57,13 @@ function DetailSections({ organization, legalPerson }: DetailSectionsProps) {
           </div>
           <div className="min-w-0">
             <dt className="body-s text-text-secondary">Razão social</dt>
-            <dd className="label-m mt-2xs break-words text-text-primary">{legalPerson.name}</dd>
+            <dd className="label-m mt-2xs break-words text-text-primary">{name}</dd>
           </div>
           <div className="min-w-0">
             <dt className="body-s text-text-secondary">Contato</dt>
             <dd className="mono-m mt-2xs flex flex-col gap-2xs break-all text-text-primary">
               <span>{legalPerson.email}</span>
-              {legalPerson.phone_numbers.map((phone, index) => (
+              {phoneNumbers.map((phone, index) => (
                 <span key={`${index}-${phone.country_code}${phone.area_code}${phone.number}`}>
                   {formatPhone(`${phone.area_code}${phone.number}`)}
                 </span>
@@ -96,17 +104,19 @@ function DetailSections({ organization, legalPerson }: DetailSectionsProps) {
         <dl className="mt-md flex flex-col gap-md">
           <div className="min-w-0">
             <dt className="body-s text-text-secondary">Nome</dt>
-            <dd className="label-m mt-2xs break-words text-text-primary">{legalPerson.owner.name}</dd>
+            <dd className="label-m mt-2xs break-words text-text-primary">
+              {owner.natural_person.person.name}
+            </dd>
           </div>
           <div className="min-w-0">
             <dt className="body-s text-text-secondary">CPF</dt>
             <dd className="mono-m mt-2xs text-text-primary">
-              {formatCPF(legalPerson.owner.document_number)}
+              {formatCPF(owner.natural_person.person.document_number)}
             </dd>
           </div>
           <div className="min-w-0">
             <dt className="body-s text-text-secondary">E-mail</dt>
-            <dd className="mono-m mt-2xs break-all text-text-primary">{legalPerson.owner.email}</dd>
+            <dd className="mono-m mt-2xs break-all text-text-primary">{owner.natural_person.email}</dd>
           </div>
         </dl>
       </section>
@@ -117,7 +127,8 @@ function DetailSections({ organization, legalPerson }: DetailSectionsProps) {
 export function OrganizerDetail({
   id,
   organization,
-  legalPerson,
+  person,
+  owner,
   isLoading,
   hasError,
   actions,
@@ -162,8 +173,16 @@ export function OrganizerDetail({
           </Button>
         </div>
       )}
-      {legalPerson && <DetailSections organization={organization} legalPerson={legalPerson} />}
-      {legalPerson && (
+      {person?.legal_person && owner && (
+        <DetailSections
+          organization={organization}
+          name={person.name}
+          phoneNumbers={person.phone_numbers}
+          legalPerson={person.legal_person}
+          owner={owner}
+        />
+      )}
+      {person?.legal_person && owner && (
         <OrganizerActions
           organization={organization}
           actions={actions}

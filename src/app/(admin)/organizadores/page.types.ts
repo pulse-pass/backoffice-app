@@ -1,11 +1,12 @@
 import type { ChangeEvent, Ref } from 'react'
 
-import type { GetInternalLegalPersonResponse } from '@/services/legal-person/legal-person.types'
+import type { ListInternalLegalPersonCollaboratorsResponse } from '@/services/legal-person-collaborator/legal-person-collaborator.types'
 import type {
   ListInternalOrganizationRejectionReasonsResponse,
   ListInternalOrganizationsResponse,
   OrganizationStatus,
 } from '@/services/organization/organization.types'
+import type { GetInternalPersonResponse } from '@/services/person/person.types'
 
 export interface OrganizersPageState {
   filters: {
@@ -26,7 +27,8 @@ export interface OrganizersPageState {
     organizationKey: string | null
   }
   detail: {
-    legalPerson: GetInternalLegalPersonResponse | null
+    person: GetInternalPersonResponse | null
+    owner: ListInternalLegalPersonCollaboratorsResponse | null
     isLoading: boolean
     hasError: boolean
   }
