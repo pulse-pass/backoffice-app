@@ -2,13 +2,16 @@ import { useId } from 'react'
 
 import { Button } from '@/components/Button'
 import { StatusBadge } from '@/components/StatusBadge'
+import { getCompanyTypeLabel } from '@/services/legal-person/legal-person.handlers'
 import type { GetInternalLegalPersonResponse } from '@/services/legal-person/legal-person.types'
 import { getBadgeStatus } from '@/services/organization/organization.handlers'
 import type { ListInternalOrganizationsResponse } from '@/services/organization/organization.types'
 import { formatCNPJ } from '@/utils/cnpj.handlers'
 import { formatCPF } from '@/utils/cpf.handlers'
+import { formatCurrency } from '@/utils/currency.handlers'
 import { formatDate, formatTime } from '@/utils/date.handlers'
 import { formatPhone } from '@/utils/phone.handlers'
+import { formatPostalCode } from '@/utils/postal-code.handlers'
 
 import type { OrganizerActionsProps } from '../page.types'
 import { OrganizerActions } from './OrganizerActions'
@@ -57,6 +60,31 @@ function DetailSections({ organization, legalPerson }: DetailSectionsProps) {
                   {formatPhone(`${phone.area_code}${phone.number}`)}
                 </span>
               ))}
+            </dd>
+          </div>
+          <div className="min-w-0">
+            <dt className="body-s text-text-secondary">Tipo da empresa</dt>
+            <dd className="label-m mt-2xs break-words text-text-primary">
+              {getCompanyTypeLabel(legalPerson.legal_person_company_type)}
+            </dd>
+          </div>
+          <div className="min-w-0">
+            <dt className="body-s text-text-secondary">Faturamento mensal</dt>
+            <dd className="mono-m mt-2xs break-words text-text-primary">
+              {formatCurrency(legalPerson.monthly_revenue_amount)}
+            </dd>
+          </div>
+          <div className="min-w-0">
+            <dt className="body-s text-text-secondary">Endereço</dt>
+            <dd className="label-m mt-2xs flex flex-col gap-2xs break-words text-text-primary">
+              <span>
+                {legalPerson.legal_person_address.street}, {legalPerson.legal_person_address.number}
+              </span>
+              {legalPerson.legal_person_address.complement && (
+                <span>{legalPerson.legal_person_address.complement}</span>
+              )}
+              <span>{legalPerson.legal_person_address.neighborhood}</span>
+              <span className="mono-m">{formatPostalCode(legalPerson.legal_person_address.postal_code)}</span>
             </dd>
           </div>
         </dl>

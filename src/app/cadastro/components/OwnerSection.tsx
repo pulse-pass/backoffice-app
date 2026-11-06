@@ -21,7 +21,7 @@ export function OwnerSection({
     >
       <div className="flex flex-col gap-sm">
         <h2 id="owner-title" className="title-m flex items-baseline gap-sm text-text-primary">
-          <span className="mono-m text-text-secondary">02</span>
+          <span className="mono-m text-text-secondary">03</span>
           Responsável pela conta
         </h2>
         <p className="body-s text-text-secondary">

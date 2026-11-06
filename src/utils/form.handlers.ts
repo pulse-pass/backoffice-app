@@ -6,6 +6,7 @@ export type Form<TData, TKey extends string, TSection extends string, TRequest> 
   fields: TKey[]
   initialData: TData
   update: (data: TData, key: TKey, value: string) => TData
+  complete?: (data: TData, key: TKey) => TData
   validateField: (data: TData, key: TKey) => string | undefined
   validate: (data: TData) => FieldErrors<TKey>
   isSectionValid: (data: TData, section: TSection) => boolean

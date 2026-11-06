@@ -1,5 +1,7 @@
 import { Field } from '@/components/Field'
+import { Select } from '@/components/Select'
 import type { CompanyFormData } from '@/services/legal-person/forms/create-legal-person.form.types'
+import { COMPANY_TYPES } from '@/services/legal-person/legal-person.handlers'
 
 import type { SectionProps } from '../page.types'
 
@@ -78,6 +80,40 @@ export function CompanySection({
           error={errors['company.phone']}
           onChange={(event) => onChange('company.phone', event.target.value)}
           onBlur={() => onBlur('company.phone')}
+        />
+        <Select
+          ref={registerField('company.company_type')}
+          id="company-type"
+          name="company_type"
+          label="Tipo da empresa"
+          placeholder="Selecione o tipo"
+          required
+          autoComplete="off"
+          value={values.company_type}
+          error={errors['company.company_type']}
+          onChange={(event) => onChange('company.company_type', event.target.value)}
+          onBlur={() => onBlur('company.company_type')}
+        >
+          {COMPANY_TYPES.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
+          ))}
+        </Select>
+        <Field
+          ref={registerField('company.monthly_revenue')}
+          id="company-monthly-revenue"
+          name="company_monthly_revenue"
+          label="Faturamento mensal"
+          required
+          numeric
+          inputMode="decimal"
+          autoComplete="off"
+          placeholder="R$ 0,00"
+          value={values.monthly_revenue}
+          error={errors['company.monthly_revenue']}
+          onChange={(event) => onChange('company.monthly_revenue', event.target.value)}
+          onBlur={() => onBlur('company.monthly_revenue')}
         />
       </div>
     </section>

@@ -2,6 +2,7 @@ import { classNames } from '@/utils/class-name.handlers'
 
 interface RegistrationIntroProps {
   companyValid: boolean
+  addressValid: boolean
   ownerValid: boolean
 }
 
@@ -33,19 +34,20 @@ function Step({ number, label, filled, muted = false }: StepProps) {
   )
 }
 
-export function RegistrationIntro({ companyValid, ownerValid }: RegistrationIntroProps) {
+export function RegistrationIntro({ companyValid, addressValid, ownerValid }: RegistrationIntroProps) {
   return (
     <div className="flex flex-col">
       <p className="mono-eyebrow text-text-secondary">Cadastro de organizador</p>
       <h1 className="display-m lg:display-l mt-md text-text-primary">Venda seus shows aqui.</h1>
       <p className="body-m mt-md text-text-secondary lg:mt-lg">
-        Cadastre a empresa e a pessoa responsável. A administração da PulsePass analisa o pedido e, até a
-        aprovação, a conta fica pendente.
+        Cadastre a empresa, o endereço e a pessoa responsável. A administração da PulsePass analisa o pedido
+        e, até a aprovação, a conta fica pendente.
       </p>
       <ol className="mt-xl hidden flex-col gap-sm lg:flex" aria-label="Etapas do cadastro">
         <Step number="01" label="Dados da empresa" filled={companyValid} />
-        <Step number="02" label="Responsável pela conta" filled={ownerValid} />
-        <Step number="03" label="Análise da administração" filled={false} muted />
+        <Step number="02" label="Endereço da empresa" filled={addressValid} />
+        <Step number="03" label="Responsável pela conta" filled={ownerValid} />
+        <Step number="04" label="Análise da administração" filled={false} muted />
       </ol>
     </div>
   )

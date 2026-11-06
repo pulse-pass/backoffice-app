@@ -5,6 +5,16 @@ export type CompanyFormData = {
   name: string
   email: string
   phone: string
+  company_type: string
+  monthly_revenue: string
+}
+
+export type AddressFormData = {
+  postal_code: string
+  street: string
+  number: string
+  complement: string
+  neighborhood: string
 }
 
 export type OwnerFormData = {
@@ -16,11 +26,13 @@ export type OwnerFormData = {
 
 export type CreateLegalPersonFormData = {
   company: CompanyFormData
+  address: AddressFormData
   owner: OwnerFormData
 }
 
 export type CreateLegalPersonFormSection = keyof CreateLegalPersonFormData
 
-export type CreateLegalPersonFieldKey = `company.${keyof CompanyFormData}` | `owner.${keyof OwnerFormData}`
+export type CreateLegalPersonFieldKey =
+  `company.${keyof CompanyFormData}` | `address.${keyof AddressFormData}` | `owner.${keyof OwnerFormData}`
 
 export type CreateLegalPersonFieldErrors = FieldErrors<CreateLegalPersonFieldKey>
