@@ -40,7 +40,7 @@ const RULES: Record<CreateLegalPersonFieldKey, FieldRule[]> = {
     maxLength(MAX_TEXT_LENGTH, 'A razão social deve ter até 255 caracteres.'),
   ],
   'company.email': [required('Informe o e-mail.'), valid(validateEmail, 'Informe um e-mail válido.')],
-  'company.phone': [required('Informe o telefone.'), valid(validatePhone, 'Informe um telefone com DDD.')],
+  'company.phone': [required('Informe o celular.'), valid(validatePhone, 'Informe um celular com DDD.')],
   'company.company_type': [valid(isCompanyType, 'Selecione o tipo da empresa.')],
   'company.monthly_revenue': [
     required('Informe o faturamento mensal.'),
