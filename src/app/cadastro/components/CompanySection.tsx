@@ -69,7 +69,7 @@ export function CompanySection({
           ref={registerField('company.phone')}
           id="company-phone"
           name="company_phone"
-          label="Telefone"
+          label="Celular"
           required
           type="tel"
           numeric

@@ -6,6 +6,8 @@ export interface ParsedPhone {
 }
 
 const MAX_PHONE_LENGTH = 11
+const MOBILE_PREFIX_LENGTH = 5
+const MOBILE_NUMBER_LENGTH = 9
 const COUNTRY_CODE_PREFIX = '+55'
 
 const getNationalDigits = (value: string): string => {
@@ -22,9 +24,8 @@ export const formatPhone = (value: string): string => {
   if (digits.length <= 2) return `(${digits}`
   const area = digits.slice(0, 2)
   const rest = digits.slice(2)
-  const split = digits.length > 10 ? 5 : 4
-  if (rest.length <= split) return `(${area}) ${rest}`
-  return `(${area}) ${rest.slice(0, split)}-${rest.slice(split)}`
+  if (rest.length <= MOBILE_PREFIX_LENGTH) return `(${area}) ${rest}`
+  return `(${area}) ${rest.slice(0, MOBILE_PREFIX_LENGTH)}-${rest.slice(MOBILE_PREFIX_LENGTH)}`
 }
 
 export const parsePhone = (value: string): ParsedPhone => {
@@ -35,6 +36,5 @@ export const parsePhone = (value: string): ParsedPhone => {
 export const validatePhone = (value: string): boolean => {
   const { area_code, number } = parsePhone(value)
   if (area_code.length !== 2 || area_code.startsWith('0')) return false
-  if (number.length === 9) return number.startsWith('9')
-  return number.length === 8 && /^[2-5]/.test(number)
+  return number.length === MOBILE_NUMBER_LENGTH && number.startsWith('9')
 }
