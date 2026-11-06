@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/Button'
 import { PublicHeader } from '@/components/PublicHeader'
 
+import { AddressSection } from './components/AddressSection'
 import { CompanySection } from './components/CompanySection'
 import { OwnerSection } from './components/OwnerSection'
 import { RegistrationIntro } from './components/RegistrationIntro'
@@ -13,6 +14,7 @@ export function PageView({
   errors,
   isSubmitting,
   companyValid,
+  addressValid,
   ownerValid,
   onChange,
   onBlur,
@@ -29,10 +31,17 @@ export function PageView({
         }
       />
       <main className="mx-auto grid w-full max-w-(--container-page) gap-lg px-md pt-xl pb-2xl lg:grid-cols-[var(--column-intro)_minmax(0,1fr)] lg:gap-x-3xl lg:px-3xl lg:pt-2xl lg:pb-3xl">
-        <RegistrationIntro companyValid={companyValid} ownerValid={ownerValid} />
+        <RegistrationIntro companyValid={companyValid} addressValid={addressValid} ownerValid={ownerValid} />
         <form noValidate onSubmit={onSubmit} className="flex min-w-0 flex-col gap-lg">
           <CompanySection
             values={formData.company}
+            errors={errors}
+            onChange={onChange}
+            onBlur={onBlur}
+            registerField={registerField}
+          />
+          <AddressSection
+            values={formData.address}
             errors={errors}
             onChange={onChange}
             onBlur={onBlur}

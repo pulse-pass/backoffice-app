@@ -4,10 +4,12 @@ import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'reac
 
 import { toast } from '@/lib/toast'
 import type { PaginatedResponse } from '@/services/api/api.types'
-import { getApiErrorMessage } from '@/services/api/api-error.handlers'
+import { getApiErrorMessage, isExpectedApiError } from '@/services/api/api-error.handlers'
+import type { ExpectedApiError } from '@/services/api/api-error.types'
 import { legalPersonApi } from '@/services/legal-person/legal-person.api'
 import type { GetInternalLegalPersonResponse } from '@/services/legal-person/legal-person.types'
 import { organizationApi } from '@/services/organization/organization.api'
+import { ORGANIZATION_ERRORS } from '@/services/organization/organization.errors'
 import type {
   ListInternalOrganizationRejectionReasonsResponse,
   ListInternalOrganizationsParams,
@@ -311,6 +313,7 @@ function OrganizersPage() {
     organizationKey: string,
     request: () => Promise<unknown>,
     successMessage: string,
+    staleErrors: ExpectedApiError[] = [],
   ) => {
     if (actionInFlightRef.current) return
     actionInFlightRef.current = true
@@ -327,6 +330,13 @@ function OrganizersPage() {
         ...current,
         actions: { ...current.actions, pendingAction: null, pendingOrganizationKey: null },
       }))
+      if (isExpectedApiError(error, staleErrors)) {
+        if (selectedKeyRef.current === organizationKey) {
+          tabPanelRef.current?.focus()
+          clearSelection()
+        }
+        void requestList(statusRef.current, appliedSearchRef.current, 1)
+      }
       return
     }
     actionInFlightRef.current = false
@@ -353,6 +363,7 @@ function OrganizersPage() {
           organization_rejection_reason: null,
         }),
       'Empresa aprovada.',
+      ORGANIZATION_ERRORS.updateInternalOrganization.failed,
     )
   }
 

@@ -9,7 +9,7 @@ import { createLegalPersonForm } from '@/services/legal-person/forms/create-lega
 import type { CreateLegalPersonFieldKey } from '@/services/legal-person/forms/create-legal-person.form.types'
 import { legalPersonApi } from '@/services/legal-person/legal-person.api'
 
-import type { CadastroPageState } from './page.types'
+import type { CadastroPageState, FieldElement } from './page.types'
 import { PageView } from './PageView'
 
 const INITIAL_STATE: CadastroPageState = {
@@ -20,10 +20,10 @@ const INITIAL_STATE: CadastroPageState = {
 export default function CadastroPage() {
   const router = useRouter()
   const [state, setState] = useState<CadastroPageState>(INITIAL_STATE)
-  const fieldRefs = useRef<Partial<Record<CreateLegalPersonFieldKey, HTMLInputElement | null>>>({})
+  const fieldRefs = useRef<Partial<Record<CreateLegalPersonFieldKey, FieldElement | null>>>({})
   const isSubmittingRef = useRef(false)
 
-  const registerField = (key: CreateLegalPersonFieldKey) => (element: HTMLInputElement | null) => {
+  const registerField = (key: CreateLegalPersonFieldKey) => (element: FieldElement | null) => {
     fieldRefs.current[key] = element
   }
 
@@ -52,7 +52,11 @@ export default function CadastroPage() {
     const message = createLegalPersonForm.validateField(state.form.data, key)
     setState((current) => ({
       ...current,
-      form: { ...current.form, errors: { ...current.form.errors, [key]: message } },
+      form: {
+        ...current.form,
+        data: createLegalPersonForm.complete?.(current.form.data, key) ?? current.form.data,
+        errors: { ...current.form.errors, [key]: message },
+      },
     }))
   }
 
@@ -93,6 +97,7 @@ export default function CadastroPage() {
       errors={state.form.errors}
       isSubmitting={state.submission.isSubmitting}
       companyValid={createLegalPersonForm.isSectionValid(state.form.data, 'company')}
+      addressValid={createLegalPersonForm.isSectionValid(state.form.data, 'address')}
       ownerValid={createLegalPersonForm.isSectionValid(state.form.data, 'owner')}
       onChange={handleChange}
       onBlur={handleBlur}

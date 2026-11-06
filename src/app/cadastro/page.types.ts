@@ -6,6 +6,8 @@ import type {
   CreateLegalPersonFormData,
 } from '@/services/legal-person/forms/create-legal-person.form.types'
 
+export type FieldElement = HTMLInputElement | HTMLSelectElement
+
 export interface CadastroPageState {
   form: {
     data: CreateLegalPersonFormData
@@ -22,10 +24,11 @@ export interface PageViewProps {
   errors: CreateLegalPersonFieldErrors
   isSubmitting: boolean
   companyValid: boolean
+  addressValid: boolean
   ownerValid: boolean
   onChange: (key: CreateLegalPersonFieldKey, value: string) => void
   onBlur: (key: CreateLegalPersonFieldKey) => void
-  registerField: (key: CreateLegalPersonFieldKey) => (element: HTMLInputElement | null) => void
+  registerField: (key: CreateLegalPersonFieldKey) => (element: FieldElement | null) => void
   onSubmit: (event: SubmitEvent<HTMLFormElement>) => void
 }
 
@@ -34,5 +37,5 @@ export interface SectionProps<T> {
   errors: CreateLegalPersonFieldErrors
   onChange: (key: CreateLegalPersonFieldKey, value: string) => void
   onBlur: (key: CreateLegalPersonFieldKey) => void
-  registerField: (key: CreateLegalPersonFieldKey) => (element: HTMLInputElement | null) => void
+  registerField: (key: CreateLegalPersonFieldKey) => (element: FieldElement | null) => void
 }
