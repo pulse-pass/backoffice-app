@@ -8,6 +8,13 @@ import type {
 
 export type FieldElement = HTMLInputElement | HTMLSelectElement
 
+export type PostalCodeLookupStatus = 'idle' | 'loading' | 'found' | 'not_found' | 'unavailable'
+
+export interface PostalCodeLookup {
+  status: PostalCodeLookupStatus
+  postalCode: string
+}
+
 export interface CadastroPageState {
   form: {
     data: CreateLegalPersonFormData
@@ -17,12 +24,14 @@ export interface CadastroPageState {
   submission: {
     isSubmitting: boolean
   }
+  postalCodeLookup: PostalCodeLookup
 }
 
 export interface PageViewProps {
   formData: CreateLegalPersonFormData
   errors: CreateLegalPersonFieldErrors
   isSubmitting: boolean
+  postalCodeStatus: PostalCodeLookupStatus
   companyValid: boolean
   addressValid: boolean
   ownerValid: boolean

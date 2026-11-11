@@ -13,6 +13,7 @@ export function PageView({
   formData,
   errors,
   isSubmitting,
+  postalCodeStatus,
   companyValid,
   addressValid,
   ownerValid,
@@ -42,6 +43,7 @@ export function PageView({
           />
           <AddressSection
             values={formData.address}
+            postalCodeStatus={postalCodeStatus}
             errors={errors}
             onChange={onChange}
             onBlur={onBlur}

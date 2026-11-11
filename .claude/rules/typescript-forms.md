@@ -22,5 +22,5 @@ paths:
 - **BAP-261** A select field is a string in the form data (empty until chosen), its rule is `valid(isCompanyType, ...)` and `toRequest` narrows it to the API union.
 - **BAP-262** A section's optional field (`address.complement`) has only a `maxLength` rule and goes to the request as `undefined` when blank.
 - **BAP-263** Field refs (`registerField`) accept `HTMLInputElement | HTMLSelectElement` (`FieldElement`), so the first invalid field takes focus whichever control it is.
-- **BAP-264** Field errors are only the client-side validation that runs before the request (on blur of a touched field and on submit, focusing the first invalid field).
+- **BAP-264** Field errors are only the client-side validation that runs before the request (on blur of a touched field and on submit, focusing the first invalid field), plus the CEP lookup answer "not found" that the page runs before the request.
 - **BAP-265** A gateway error never marks a field.

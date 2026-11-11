@@ -1,15 +1,28 @@
 import { Field } from '@/components/Field'
 import type { AddressFormData } from '@/services/legal-person/forms/create-legal-person.form.types'
 
-import type { SectionProps } from '../page.types'
+import type { PostalCodeLookupStatus, SectionProps } from '../page.types'
+
+interface AddressSectionProps extends SectionProps<AddressFormData> {
+  postalCodeStatus: PostalCodeLookupStatus
+}
+
+const getPostalCodeHint = (status: PostalCodeLookupStatus): string | undefined => {
+  if (status === 'loading') return 'Buscando endereço…'
+  if (status === 'unavailable') return 'Não foi possível buscar o endereço. Preencha os campos.'
+  return undefined
+}
 
 export function AddressSection({
   values,
+  postalCodeStatus,
   errors,
   onChange,
   onBlur,
   registerField,
-}: SectionProps<AddressFormData>) {
+}: AddressSectionProps) {
+  const postalCodeHint = getPostalCodeHint(postalCodeStatus)
+
   return (
     <section
       aria-labelledby="address-title"
@@ -19,6 +32,9 @@ export function AddressSection({
         <span className="mono-m text-text-secondary">02</span>
         Endereço
       </h2>
+      <p role="status" className="sr-only">
+        {postalCodeStatus === 'found' ? 'CEP encontrado.' : (postalCodeHint ?? '')}
+      </p>
       <Field
         ref={registerField('address.postal_code')}
         id="address-postal-code"
@@ -29,6 +45,7 @@ export function AddressSection({
         inputMode="numeric"
         autoComplete="postal-code"
         placeholder="00000-000"
+        hint={postalCodeHint}
         value={values.postal_code}
         error={errors['address.postal_code']}
         onChange={(event) => onChange('address.postal_code', event.target.value)}
