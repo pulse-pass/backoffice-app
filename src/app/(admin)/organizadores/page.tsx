@@ -422,6 +422,7 @@ function OrganizersPage() {
       selectedOrganization.organization_key,
       () => organizationApi.deleteInternalOrganization(selectedOrganization.organization_key),
       'Empresa removida.',
+      ORGANIZATION_ERRORS.deleteInternalOrganization.failed,
     )
   }
 
