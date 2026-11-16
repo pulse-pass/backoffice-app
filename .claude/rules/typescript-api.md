@@ -18,7 +18,7 @@ paths:
 - **BAP-205** `BaseApi.get(path, params?)` forwards the optional `params` to axios as the query string (an `undefined` value is omitted).
 - **BAP-206** `listInternalOrganizations` filters by the optional `name` (prefix of the razão social) and `document_number` (exact CNPJ, digits only: a partial CNPJ finds nothing until it is complete).
 - **BAP-207** `src/lib/axios.ts` is the single axios instance (`baseURL`, JSON, `Accept-Language: pt-BR`, 30 s timeout); it sends the gateway cookies and the CSRF header, so it is only for the gateways (a public external API does not use it, BAP-370).
-- **BAP-208** Screens never import `sonner` or `axios` directly: they go through `src/lib/toast.tsx` and the `*.api.ts` services.
+- **BAP-208** Screens never import `sonner` or `axios` directly: they go through `src/lib/toast.tsx` and the `*.api.ts` services. The only `sonner` import outside `src/lib/toast.tsx` is the `<Toaster>` of the root layout.
 - **BAP-370** A public external API (ViaCEP) lives in `src/services/<resource>/<resource>.api.ts` like any service but uses native `fetch` with `credentials: 'omit'` and its own timeout, without `BaseApi` and without `src/lib/axios.ts`, so no gateway cookie or CSRF header reaches a third party; it has no `.errors.ts` because it never answers a gateway error.
 
 ## Types

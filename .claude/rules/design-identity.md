@@ -43,7 +43,7 @@ paths:
 - **BAP-064** Arbitrary values are accepted only for Figma measures with no token (icon and logo sizes such as `size-7`, the logo bars, the toast badge `text-base`); spacing and padding always use tokens.
 - **BAP-066** Radius is 2 px (`rounded-sm`) on buttons, fields and cards.
 - **BAP-067** The tab icon is `src/app/icon.svg` and `src/app/apple-icon.png` (the `Logo` bars on a rounded Shadow Grey square), with no `favicon.ico`.
-- **BAP-068** The icon files are the only place with hex literals, since they cannot read CSS tokens.
+- **BAP-068** The icon files and the `themeColor` of the root layout `viewport` (a `<meta>` tag) are the only places with hex literals, since they cannot read CSS tokens.
 
 ## Typography
 
