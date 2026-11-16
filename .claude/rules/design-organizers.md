@@ -64,6 +64,7 @@ paths:
 - **BAP-149** The reload after a success uses the status and the applied search at the moment of the response, not the ones captured at the click.
 - **BAP-150** The organization status `ERROR` does not exist in the app: no tab, badge or alert, and the analysis is done outside the screens.
 - **BAP-151** When the approval answers 422 `ORG00005`, the toast shows the API message, the detail closes and the tab reloads, because the company left the pending list.
+- **BAP-372** When the removal answers 422 `ORG00007`, the toast shows the API message, the detail closes and the tab reloads, because the company is already `DELETED` and only the access revocation failed.
 - **BAP-152** An owner in that status sees the awaiting approval state in `/situacao`.
 - **BAP-153** The reason is chosen in a `Select` fed by the reasons table, not free text; the removal has no reason field.
 - **BAP-154** The footnote promises no e-mail ("mostra o motivo na tela de situação").
